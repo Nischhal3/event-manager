@@ -11,11 +11,13 @@ import androidx.navigation.NavController
 import com.example.eventmanager.Screen
 
 @Composable
-fun LogIn( navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center
-        ) {
-        Text(text = "Log In Screen",
-        modifier = Modifier.clickable { navController.navigate(route = Screen.Home.route) })
+fun Map() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Map",
+        )
     }
 }
