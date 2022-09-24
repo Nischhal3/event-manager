@@ -67,4 +67,5 @@ dependencies {
     // Material icons
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
+
 }

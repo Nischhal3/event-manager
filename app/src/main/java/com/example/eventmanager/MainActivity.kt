@@ -24,7 +24,6 @@ import com.example.eventmanager.ui.theme.EventManagerTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.example.eventmanager.screens.HomeScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -34,11 +33,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             EventManagerTheme {
-                // navController = rememberNavController()
-                // BottomNavGraph(navController = navController)
-                HomeScreen()
+
+                    RootNavigationGraph(navController = rememberNavController())
+                }
             }
         }
     }
-}
+
 
