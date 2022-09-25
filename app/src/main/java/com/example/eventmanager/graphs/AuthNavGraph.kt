@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.eventmanager.screens.LoginContent
+import com.example.eventmanager.screens.RegisterPage
 
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
@@ -27,7 +28,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             )
         }
         composable(route = AuthScreen.SignUp.route) {
-            ScreenContent(name = AuthScreen.SignUp.route) {}
+            RegisterPage(navController= navController)
         }
         composable(route = AuthScreen.Forgot.route) {
             ScreenContent(name = AuthScreen.Forgot.route) {}

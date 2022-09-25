@@ -32,8 +32,10 @@ fun Home() {
     Scaffold (
         bottomBar = { BottomBar(navController = navController)}
     ){
+
         Text(text = "Home")
         BottomNavGraph(navController = navController)
+
     }
 }
 @Composable

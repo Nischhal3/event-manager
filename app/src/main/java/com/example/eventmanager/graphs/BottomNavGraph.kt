@@ -16,25 +16,25 @@ fun BottomNavGraph(
     NavHost(
         navController = navController,
         startDestination = BottomBar.Home.route
-    ){
+    ) {
         composable(
             route = BottomBar.Home.route
-        ){
+        ) {
             Home()
         }
         composable(
             route = BottomBar.Event.route
-        ){
+        ) {
             Event()
         }
         composable(
             route = BottomBar.Map.route
-        ){
+        ) {
             Map()
         }
         composable(
             route = BottomBar.Account.route
-        ){
+        ) {
             Account()
         }
     }
