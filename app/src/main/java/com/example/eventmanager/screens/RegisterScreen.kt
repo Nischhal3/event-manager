@@ -1,9 +1,8 @@
-package com.example.eventmanager
+package com.example.eventmanager.screens
 
-import androidx.compose.foundation.BorderStroke
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,36 +12,34 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import com.example.eventmanager.R
+import com.example.eventmanager.database.User
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.ui.theme.Secondary
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun Register(navController: NavController) {
-
-
+fun Register(navController: NavController, userViewModel: UserViewModel) {
+    //userViewModel.addUser(User(0, "Biswas", "KC", "biswas", "123"))
+    userViewModel.deleteUsers()
+    val userList = userViewModel.getAllUser().observeAsState(listOf())
+    userList.value.forEach {
+        Log.d("user", "${it.first_name}: ${it.user_id}")
+    }
+    Log.d("user", userList.value.size.toString())
     val nameValue = remember { mutableStateOf("") }
     val emailValue = remember { mutableStateOf("") }
     val phoneValue = remember { mutableStateOf("") }

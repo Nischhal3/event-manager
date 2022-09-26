@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.eventmanager.*
+import com.example.eventmanager.screens.Account
 
 
 sealed class BottomNavigationScreens(val route: String, val label: String, val icon: ImageVector) {
