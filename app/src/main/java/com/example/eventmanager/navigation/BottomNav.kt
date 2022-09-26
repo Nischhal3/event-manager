@@ -30,7 +30,7 @@ val bottomNavigationItems = listOf(
 fun MainNavHost(authController: NavController, navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavigationScreens.Map.route
+        startDestination = BottomNavigationScreens.Home.route
     ) {
         composable(BottomNavigationScreens.Home.route) { ItemOneScreen() }
         composable(BottomNavigationScreens.Events.route) { ItemTwoScreen() }
