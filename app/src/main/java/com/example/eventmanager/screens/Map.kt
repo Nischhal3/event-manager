@@ -10,13 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ItemThreeScreen() {
+fun Map() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Screen 3")
+        Text(text = "Map")
     }
 }

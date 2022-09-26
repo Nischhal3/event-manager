@@ -32,9 +32,9 @@ fun MainNavHost(authController: NavController, navController: NavHostController)
         navController = navController,
         startDestination = BottomNavigationScreens.Home.route
     ) {
-        composable(BottomNavigationScreens.Home.route) { ItemOneScreen() }
-        composable(BottomNavigationScreens.Events.route) { ItemTwoScreen() }
-        composable(BottomNavigationScreens.Map.route) { ItemThreeScreen() }
-        composable(BottomNavigationScreens.Account.route) { ItemFourScreen() }
+        composable(BottomNavigationScreens.Home.route) { HomeScreen() }
+        composable(BottomNavigationScreens.Events.route) { Events() }
+        composable(BottomNavigationScreens.Map.route) { Map() }
+        composable(BottomNavigationScreens.Account.route) { Account() }
     }
 }
