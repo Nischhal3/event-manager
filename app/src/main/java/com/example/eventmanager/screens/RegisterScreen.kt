@@ -1,9 +1,8 @@
-package com.example.eventmanager
+package com.example.eventmanager.screens
 
-import androidx.compose.foundation.BorderStroke
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,44 +12,46 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import com.example.eventmanager.R
+import com.example.eventmanager.database.User
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.ui.theme.Secondary
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun Register(navController: NavController) {
-
-
-    val nameValue = remember { mutableStateOf("") }
-    val emailValue = remember { mutableStateOf("") }
-    val phoneValue = remember { mutableStateOf("") }
-    val passwordValue = remember { mutableStateOf("") }
-    val confirmPasswordValue = remember { mutableStateOf("") }
-
+fun Register(navController: NavController, userViewModel: UserViewModel) {
+    //userViewModel.deleteUsers()
+//    val userList = userViewModel.getAllUser().observeAsState(listOf())
+//    userList.value.forEach {
+//        Log.d("user", "${it.first_name}: ${it.user_id}")
+//    }
+    //Log.d("user", userList.value.size.toString())
+    val firstName = remember { mutableStateOf("") }
+    val lastName = remember { mutableStateOf("") }
+    val userName = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val confirmPassword = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
+    var isEnabled = true
+
+    if (firstName.value.isEmpty() || lastName.value.isEmpty() || userName.value.isEmpty()
+        || confirmPassword.value.isEmpty() || password.value.isEmpty()) {
+        isEnabled = false
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
@@ -87,9 +88,9 @@ fun Register(navController: NavController) {
             Spacer(modifier = Modifier.padding(20.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 TextField(
-                    value = nameValue.value,
-                    onValueChange = { nameValue.value = it },
-                    label = { Text(text = "Name") },
+                    value = firstName.value,
+                    onValueChange = { firstName.value = it },
+                    label = { Text(text = "First Name") },
                     placeholder = { Text(text = "Enter name") },
                     singleLine = true,
                     modifier = Modifier
@@ -97,19 +98,28 @@ fun Register(navController: NavController) {
                         .padding(3.dp)
                 )
                 TextField(
-                    value = emailValue.value,
-                    onValueChange = { emailValue.value = it },
-                    label = { Text(text = "Email") },
-                    placeholder = { Text(text = "Enter email") },
+                    value = lastName.value,
+                    onValueChange = { lastName.value = it },
+                    label = { Text(text = "Last Name") },
+                    placeholder = { Text(text = "Last Name") },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(3.dp)
                 )
-
                 TextField(
-                    value = passwordValue.value,
-                    onValueChange = { passwordValue.value = it },
+                    value = userName.value,
+                    onValueChange = { userName.value = it },
+                    label = { Text(text = "User Name") },
+                    placeholder = { Text(text = "User Name") },
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(3.dp)
+                )
+                TextField(
+                    value = password.value,
+                    onValueChange = { password.value = it },
                     trailingIcon = {
                         IconButton(onClick = {
                             passwordVisibility.value = !passwordVisibility.value
@@ -132,8 +142,8 @@ fun Register(navController: NavController) {
 
                 )
                 TextField(
-                    value = confirmPasswordValue.value,
-                    onValueChange = { confirmPasswordValue.value = it },
+                    value = confirmPassword.value,
+                    onValueChange = { confirmPassword.value = it },
                     trailingIcon = {
                         IconButton(onClick = {
                             confirmPasswordVisibility.value = !confirmPasswordVisibility.value
@@ -154,13 +164,19 @@ fun Register(navController: NavController) {
                         .padding(vertical = 3.dp)
                         .fillMaxWidth(0.8f)
                 )
-
+                Spacer(modifier = Modifier.padding(2.dp))
+                if (password.value != confirmPassword.value) {
+                    isEnabled = false
+                    Text("Wrong password")
+                }
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
                     onClick = {
                         navController.navigate("main") {
                             popUpTo("login") { inclusive = true }
                         }
+                        userViewModel.addUser(
+                            User(0, firstName.value, lastName.value, userName.value, password.value))
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -176,8 +192,8 @@ fun Register(navController: NavController) {
                         Color.White
                     ),
                     shape = MaterialTheme.shapes.medium,
-
-                    ) {
+                    enabled = isEnabled
+                ) {
 
                     Text(text = "Sign Up", color = Background)
                 }
