@@ -1,5 +1,7 @@
-package com.example.eventmanager
+package com.example.eventmanager.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -22,8 +24,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,12 +41,27 @@ import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.ui.theme.Secondary
 import com.example.eventmanager.ui.theme.orange
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
 fun Login(
     navController: NavController,
+    userViewModel: UserViewModel,
+) {
+    val userList = userViewModel.getAllUser().observeAsState(listOf())
+    userList.value.forEach {
+        Log.d("user", "${it.password}: ${it.user_name}")
+    }
+    Log.d("user", userList.value.size.toString())
 
-    ) {
+    val userName = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    var isEnabled = true
+
+    if (userName.value.isEmpty() || password.value.isEmpty()) {
+        isEnabled = false
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -88,9 +107,6 @@ fun Login(
                 }
             }
 
-            // Main Card
-            val emailState = remember { mutableStateOf(TextFieldValue("")) }
-            val passState = remember { mutableStateOf(TextFieldValue("")) }
             Surface(
                 color = Background, modifier = Modifier
                     .height(550.dp)
@@ -104,7 +120,7 @@ fun Login(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
+                    val context = LocalContext.current
                     Image(
                         painter = painterResource(id = R.drawable.landing),
                         contentDescription = "",
@@ -114,8 +130,8 @@ fun Login(
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     TextField(
-                        value = emailState.value,
-                        onValueChange = { emailState.value = it },
+                        value = userName.value,
+                        onValueChange = { userName.value = it },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
@@ -129,8 +145,8 @@ fun Login(
                     )
                     Spacer(modifier = Modifier.padding(6.dp))
                     TextField(
-                        value = passState.value,
-                        onValueChange = { passState.value = it },
+                        value = password.value,
+                        onValueChange = { password.value = it },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -156,8 +172,18 @@ fun Login(
 
                     Button(
                         onClick = {
-                            navController.navigate("main") {
-                                popUpTo("login") { inclusive = true }
+                            userList.value.map {
+                                if (it.user_name == userName.value && it.password == password.value) {
+                                    navController.navigate("main") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Invalid username or password",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -165,7 +191,7 @@ fun Login(
                             Color.White
                         ),
                         shape = MaterialTheme.shapes.medium,
-
+                        enabled = isEnabled
 
                     ) {
                         Text(text = "Log In")
