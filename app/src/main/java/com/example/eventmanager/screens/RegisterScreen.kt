@@ -33,21 +33,25 @@ import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
 fun Register(navController: NavController, userViewModel: UserViewModel) {
-    //userViewModel.addUser(User(0, "Biswas", "KC", "biswas", "123"))
-    userViewModel.deleteUsers()
-    val userList = userViewModel.getAllUser().observeAsState(listOf())
-    userList.value.forEach {
-        Log.d("user", "${it.first_name}: ${it.user_id}")
-    }
-    Log.d("user", userList.value.size.toString())
-    val nameValue = remember { mutableStateOf("") }
-    val emailValue = remember { mutableStateOf("") }
-    val phoneValue = remember { mutableStateOf("") }
-    val passwordValue = remember { mutableStateOf("") }
-    val confirmPasswordValue = remember { mutableStateOf("") }
-
+    //userViewModel.deleteUsers()
+//    val userList = userViewModel.getAllUser().observeAsState(listOf())
+//    userList.value.forEach {
+//        Log.d("user", "${it.first_name}: ${it.user_id}")
+//    }
+    //Log.d("user", userList.value.size.toString())
+    val firstName = remember { mutableStateOf("") }
+    val lastName = remember { mutableStateOf("") }
+    val userName = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val confirmPassword = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
+    var isEnabled = true
+
+    if (firstName.value.isEmpty() || lastName.value.isEmpty() || userName.value.isEmpty()
+        || confirmPassword.value.isEmpty() || password.value.isEmpty()) {
+        isEnabled = false
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
@@ -84,9 +88,9 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
             Spacer(modifier = Modifier.padding(20.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 TextField(
-                    value = nameValue.value,
-                    onValueChange = { nameValue.value = it },
-                    label = { Text(text = "Name") },
+                    value = firstName.value,
+                    onValueChange = { firstName.value = it },
+                    label = { Text(text = "First Name") },
                     placeholder = { Text(text = "Enter name") },
                     singleLine = true,
                     modifier = Modifier
@@ -94,19 +98,28 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                         .padding(3.dp)
                 )
                 TextField(
-                    value = emailValue.value,
-                    onValueChange = { emailValue.value = it },
-                    label = { Text(text = "Email") },
-                    placeholder = { Text(text = "Enter email") },
+                    value = lastName.value,
+                    onValueChange = { lastName.value = it },
+                    label = { Text(text = "Last Name") },
+                    placeholder = { Text(text = "Last Name") },
                     singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(3.dp)
                 )
-
                 TextField(
-                    value = passwordValue.value,
-                    onValueChange = { passwordValue.value = it },
+                    value = userName.value,
+                    onValueChange = { userName.value = it },
+                    label = { Text(text = "User Name") },
+                    placeholder = { Text(text = "User Name") },
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(3.dp)
+                )
+                TextField(
+                    value = password.value,
+                    onValueChange = { password.value = it },
                     trailingIcon = {
                         IconButton(onClick = {
                             passwordVisibility.value = !passwordVisibility.value
@@ -129,8 +142,8 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
 
                 )
                 TextField(
-                    value = confirmPasswordValue.value,
-                    onValueChange = { confirmPasswordValue.value = it },
+                    value = confirmPassword.value,
+                    onValueChange = { confirmPassword.value = it },
                     trailingIcon = {
                         IconButton(onClick = {
                             confirmPasswordVisibility.value = !confirmPasswordVisibility.value
@@ -151,13 +164,19 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                         .padding(vertical = 3.dp)
                         .fillMaxWidth(0.8f)
                 )
-
+                Spacer(modifier = Modifier.padding(2.dp))
+                if (password.value != confirmPassword.value) {
+                    isEnabled = false
+                    Text("Wrong password")
+                }
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
                     onClick = {
                         navController.navigate("main") {
                             popUpTo("login") { inclusive = true }
                         }
+                        userViewModel.addUser(
+                            User(0, firstName.value, lastName.value, userName.value, password.value))
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -173,8 +192,8 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                         Color.White
                     ),
                     shape = MaterialTheme.shapes.medium,
-
-                    ) {
+                    enabled = isEnabled
+                ) {
 
                     Text(text = "Sign Up", color = Background)
                 }
