@@ -12,20 +12,34 @@ import com.example.eventmanager.database.UserDB
 
 import kotlinx.coroutines.launch
 
+/**
+ * Provides data to the UI
+ * Data base can be accessed via view model only
+ */
 class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val userDB = UserDB.get(application)
 
     // private val _username: MutableLiveData<String> = MutableLiveData()
     // val userName:  LiveData<String> = _username
 
-
+    /**
+     * @return List of User
+     */
     fun getAllUser(): LiveData<List<User>> =
         userDB.userDao().getAllUser()
 
 
-    fun getUserByUserName(name: String): LiveData<User> =
-        userDB.userDao().getUserByUserName(name)
+    /**
+     * @param userName
+     * @return user via userName
+     */
+    fun getUserByUserName(userName: String): LiveData<User> =
+        userDB.userDao().getUserByUserName(userName)
 
+    /**
+     * @param user
+     * Adds user to the database
+     */
     fun addUser(user: User) {
         viewModelScope.launch {
             /*getAllUser().value?.forEach {
@@ -39,21 +53,41 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun deleteUsers() {
+    fun deleteUser(userName: String){
+        viewModelScope.launch {
+
+        }
+    }
+
+    /**
+     * Deletes all user in database
+     */
+    fun deleteAllUsers() {
         viewModelScope.launch {
             userDB.userDao().deleteAll()
         }
     }
 
+    /**
+     * @return List of Events
+     */
     fun getAllEvent(): LiveData<List<Event>> =
         userDB.eventDao().getAllEvent()
 
+    /**
+     * @param event
+     * Adds event to the database
+     */
     fun addEvent(event: Event) {
         viewModelScope.launch {
             userDB.eventDao().addEvent(event)
         }
     }
 
+    /**
+     * @param event
+     * Updates event in the database
+     */
     fun updateEvent(event: Event) {
         viewModelScope.launch {
             userDB.eventDao().updateEvent(event)

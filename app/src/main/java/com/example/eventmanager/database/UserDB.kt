@@ -5,7 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [(User::class), (Event::class)], version = 1)
+/**
+ * Instance of the User and Event database
+ */
+@Database(entities = [(User::class), (Event::class)], version = 2)
 abstract class UserDB : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun eventDao(): EventDao
@@ -19,7 +22,7 @@ abstract class UserDB : RoomDatabase() {
                 sInstance =
                     Room.databaseBuilder(
                         context.applicationContext,
-                        UserDB::class.java, "team.db"
+                        UserDB::class.java, "user.db"
                     )
                         .fallbackToDestructiveMigration()
                         .build()
