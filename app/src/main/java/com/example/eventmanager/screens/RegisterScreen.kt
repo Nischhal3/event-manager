@@ -34,11 +34,6 @@ import com.example.eventmanager.viewmodel.UserViewModel
 @Composable
 fun Register(navController: NavController, userViewModel: UserViewModel) {
     //userViewModel.deleteUsers()
-//    val userList = userViewModel.getAllUser().observeAsState(listOf())
-//    userList.value.forEach {
-//        Log.d("user", "${it.first_name}: ${it.user_id}")
-//    }
-    //Log.d("user", userList.value.size.toString())
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val userName = remember { mutableStateOf("") }
@@ -172,8 +167,11 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
                     onClick = {
-                        navController.navigate("main") {
-                            popUpTo("login") { inclusive = true }
+//                        navController.navigate("main") {
+//                            popUpTo("login") { inclusive = true }
+//                        }
+                        navController.navigate("login") {
+                            launchSingleTop = true
                         }
                         userViewModel.addUser(
                             User(0, firstName.value, lastName.value, userName.value, password.value))
