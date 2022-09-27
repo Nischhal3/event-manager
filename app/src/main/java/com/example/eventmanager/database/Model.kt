@@ -3,6 +3,9 @@ package com.example.eventmanager.database
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 
+/**
+ * Model of User and Event to be created in data base
+ */
 @Entity
 data class User(
     @PrimaryKey(autoGenerate = true)
