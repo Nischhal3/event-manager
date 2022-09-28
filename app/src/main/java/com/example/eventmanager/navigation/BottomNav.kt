@@ -4,6 +4,7 @@ package com.example.eventmanager.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -11,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.eventmanager.*
 import com.example.eventmanager.screens.Account
+import com.example.eventmanager.viewmodel.UserViewModel
 
 
 sealed class BottomNavigationScreens(val route: String, val label: String, val icon: ImageVector) {
@@ -28,7 +30,12 @@ val bottomNavigationItems = listOf(
 )
 
 @Composable
-fun MainNavHost(authController: NavController, navController: NavHostController) {
+fun MainNavHost(
+    authController: NavController,
+    navController: NavHostController,
+    userName: MutableState<String>,
+    userViewModel: UserViewModel
+) {
     NavHost(
         navController = navController,
         startDestination = BottomNavigationScreens.Home.route
@@ -36,6 +43,6 @@ fun MainNavHost(authController: NavController, navController: NavHostController)
         composable(BottomNavigationScreens.Home.route) { HomeScreen() }
         composable(BottomNavigationScreens.Events.route) { Events() }
         composable(BottomNavigationScreens.Map.route) { Map() }
-        composable(BottomNavigationScreens.Account.route) { Account() }
+        composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel) }
     }
 }

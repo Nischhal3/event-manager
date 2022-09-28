@@ -6,7 +6,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,10 +22,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -47,7 +44,7 @@ import com.example.eventmanager.viewmodel.UserViewModel
 fun Login(
     navController: NavController,
     userViewModel: UserViewModel,
-) {
+): MutableState<String> {
     val userList = userViewModel.getAllUser().observeAsState(listOf())
     userList.value.forEach {
         Log.d("user", "${it.password}: ${it.user_name}")
@@ -57,7 +54,7 @@ fun Login(
     val userName = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     var isEnabled = true
-
+    var userNameAsString = ""
     if (userName.value.isEmpty() || password.value.isEmpty()) {
         isEnabled = false
     }
@@ -172,6 +169,10 @@ fun Login(
 
                     Button(
                         onClick = {
+                            if(userName.value.isNotEmpty()){
+                                userNameAsString = userName.value
+                                Log.d("user", "user from Login $userNameAsString")
+                            }
                             userList.value.map {
                                 if (it.user_name == userName.value && it.password == password.value) {
                                     navController.navigate("main") {
@@ -200,4 +201,5 @@ fun Login(
             }
         }
     }
+    return  userName
 }
