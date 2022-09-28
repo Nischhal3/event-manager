@@ -54,7 +54,6 @@ fun loginScreen(
     val userName = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     var isEnabled = true
-    var userNameAsString = ""
     if (userName.value.isEmpty() || password.value.isEmpty()) {
         isEnabled = false
     }
@@ -169,10 +168,6 @@ fun loginScreen(
 
                     Button(
                         onClick = {
-                            if(userName.value.isNotEmpty()){
-                                userNameAsString = userName.value
-                                Log.d("user", "user from Login $userNameAsString")
-                            }
                             userList.value.map {
                                 if (it.user_name == userName.value && it.password == password.value) {
                                     navController.navigate("main") {
