@@ -29,7 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,7 @@ fun loginScreen(
 
     val userName = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val passwordVisibility = remember { mutableStateOf(false) }
     var isEnabled = true
     if (userName.value.isEmpty() || password.value.isEmpty()) {
         isEnabled = false
@@ -149,6 +152,8 @@ fun loginScreen(
                                 contentDescription = "passwordIcon"
                             )
                         },
+                        visualTransformation = if (passwordVisibility.value) VisualTransformation.None
+                        else PasswordVisualTransformation(),
                         label = { Text(text = "Password", color = MainText) },
                         placeholder = { Text(text = "Enter password") },
                         modifier = Modifier.padding(vertical = 3.dp)
