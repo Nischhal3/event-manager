@@ -43,6 +43,6 @@ fun MainNavHost(
         composable(BottomNavigationScreens.Home.route) { HomeScreen() }
         composable(BottomNavigationScreens.Events.route) { Events() }
         composable(BottomNavigationScreens.Map.route) { Map() }
-        composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel) }
+        composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel, navController) }
     }
 }

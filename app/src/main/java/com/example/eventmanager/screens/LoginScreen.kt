@@ -41,7 +41,7 @@ import com.example.eventmanager.ui.theme.orange
 import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun Login(
+fun loginScreen(
     navController: NavController,
     userViewModel: UserViewModel,
 ): MutableState<String> {

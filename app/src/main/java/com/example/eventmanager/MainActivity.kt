@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.eventmanager.navigation.AuthNavigationScreens
-import com.example.eventmanager.screens.Login
+import com.example.eventmanager.screens.loginScreen
 import com.example.eventmanager.screens.Register
 import com.example.eventmanager.ui.theme.EventManagerTheme
 import com.example.eventmanager.viewmodel.UserViewModel
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController, startDestination = AuthNavigationScreens.Login.route) {
                         composable(AuthNavigationScreens.Login.route) {
-                            userName = Login(navController, userViewModel)
+                            userName = loginScreen(navController, userViewModel)
                         }
                         composable(AuthNavigationScreens.Register.route) { Register(navController, userViewModel) }
                         composable(AuthNavigationScreens.Main.route) { MainFragment(navController, userName, userViewModel) }
