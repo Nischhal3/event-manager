@@ -164,6 +164,7 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
+.idea/deploymentTargetDropDown.xml
 
 # Legacy Eclipse project files
 .classpath

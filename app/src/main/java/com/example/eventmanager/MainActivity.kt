@@ -3,41 +3,46 @@ package com.example.eventmanager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.example.eventmanager.ui.theme.EventManagerTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
-
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.eventmanager.navigation.AuthNavigationScreens
+import com.example.eventmanager.screens.loginScreen
+import com.example.eventmanager.screens.Register
+import com.example.eventmanager.ui.theme.EventManagerTheme
+import com.example.eventmanager.viewmodel.UserViewModel
 
 class MainActivity : ComponentActivity() {
-    lateinit var navController: NavHostController
-
+    companion object{
+        private lateinit var userViewModel: UserViewModel
+        private lateinit var userName: MutableState<String>
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userViewModel = UserViewModel(application)
         setContent {
             EventManagerTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    val navController = rememberNavController()
 
-                    RootNavigationGraph(navController = rememberNavController())
+                    NavHost(navController, startDestination = AuthNavigationScreens.Login.route) {
+                        composable(AuthNavigationScreens.Login.route) {
+                            userName = loginScreen(navController, userViewModel)
+                        }
+                        composable(AuthNavigationScreens.Register.route) { Register(navController, userViewModel) }
+                        composable(AuthNavigationScreens.Main.route) { MainFragment(navController, userName, userViewModel) }
+                    }
                 }
             }
         }
     }
-
+}
 
