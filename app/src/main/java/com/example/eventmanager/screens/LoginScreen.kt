@@ -6,7 +6,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,16 +22,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -44,10 +43,10 @@ import com.example.eventmanager.ui.theme.orange
 import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun Login(
+fun loginScreen(
     navController: NavController,
     userViewModel: UserViewModel,
-) {
+): MutableState<String> {
     val userList = userViewModel.getAllUser().observeAsState(listOf())
     userList.value.forEach {
         Log.d("user", "${it.password}: ${it.user_name}")
@@ -56,8 +55,8 @@ fun Login(
 
     val userName = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val passwordVisibility = remember { mutableStateOf(false) }
     var isEnabled = true
-
     if (userName.value.isEmpty() || password.value.isEmpty()) {
         isEnabled = false
     }
@@ -153,6 +152,8 @@ fun Login(
                                 contentDescription = "passwordIcon"
                             )
                         },
+                        visualTransformation = if (passwordVisibility.value) VisualTransformation.None
+                        else PasswordVisualTransformation(),
                         label = { Text(text = "Password", color = MainText) },
                         placeholder = { Text(text = "Enter password") },
                         modifier = Modifier.padding(vertical = 3.dp)
@@ -172,26 +173,26 @@ fun Login(
 
                     Button(
                         onClick = {
-                            userList.value.map {
-                                if (it.user_name == userName.value && it.password == password.value) {
+                            // userList.value.map {
+                            //   if (it.user_name == userName.value && it.password == password.value) {
                                     navController.navigate("main") {
                                         popUpTo("login") { inclusive = true }
-                                    }
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Invalid username or password",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
+                                           }
+                                        //   } else {
+                                        //       Toast.makeText(
+                                        //          context,
+                                        //            "Invalid username or password",
+                                        //           Toast.LENGTH_SHORT
+                                        //       ).show()
+                                        //    }
+                                        //  }
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Secondary,
                             Color.White
                         ),
                         shape = MaterialTheme.shapes.medium,
-                        enabled = isEnabled
+                        // enabled = isEnabled
 
                     ) {
                         Text(text = "Log In")
@@ -200,4 +201,5 @@ fun Login(
             }
         }
     }
+    return  userName
 }

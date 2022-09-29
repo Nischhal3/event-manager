@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -16,16 +16,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.eventmanager.navigation.BottomNavigationScreens
 import com.example.eventmanager.navigation.MainNavHost
 import com.example.eventmanager.navigation.bottomNavigationItems
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun MainFragment(authNavController: NavController) {
+fun MainFragment(
+    authNavController: NavController,
+    userName: MutableState<String>,
+    userViewModel: UserViewModel
+) {
     val navController = rememberNavController()
-
     Scaffold(
-        topBar = {
-            TitleBar(navController, bottomNavigationItems)
-        },
-        content = { MainNavHost(authController = authNavController, navController = navController) },
+        //topBar = {
+          //  TitleBar(navController, bottomNavigationItems)
+        //},
+        content = { MainNavHost(authController = authNavController, navController = navController, userName, userViewModel) },
         bottomBar = {
             BottomNav(navController, bottomNavigationItems)
         }
