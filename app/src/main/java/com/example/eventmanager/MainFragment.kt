@@ -26,9 +26,9 @@ fun MainFragment(
 ) {
     val navController = rememberNavController()
     Scaffold(
-        topBar = {
-            TitleBar(navController, bottomNavigationItems)
-        },
+        //topBar = {
+          //  TitleBar(navController, bottomNavigationItems)
+        //},
         content = { MainNavHost(authController = authNavController, navController = navController, userName, userViewModel) },
         bottomBar = {
             BottomNav(navController, bottomNavigationItems)
