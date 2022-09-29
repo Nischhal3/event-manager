@@ -10,13 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Map() {
+fun Favourite() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Map")
+        Text(text = "Favorite")
     }
 }

@@ -17,15 +17,15 @@ import com.example.eventmanager.viewmodel.UserViewModel
 
 sealed class BottomNavigationScreens(val route: String, val label: String, val icon: ImageVector) {
     object Home : BottomNavigationScreens("home", "Home", Icons.Default.Home)
-    object Events : BottomNavigationScreens("events", "Events", Icons.Default.CalendarToday)
-    object Map : BottomNavigationScreens("map", "Map", Icons.Default.Place)
+    object Events : BottomNavigationScreens("events", "Add Event", Icons.Default.CalendarToday)
+    object Favourite : BottomNavigationScreens("favourite", "Favourite", Icons.Default.Favorite)
     object Account : BottomNavigationScreens("account", "Account", Icons.Default.Person)
 }
 
 val bottomNavigationItems = listOf(
     BottomNavigationScreens.Home,
     BottomNavigationScreens.Events,
-    BottomNavigationScreens.Map,
+    BottomNavigationScreens.Favourite,
     BottomNavigationScreens.Account,
 )
 
@@ -42,7 +42,7 @@ fun MainNavHost(
     ) {
         composable(BottomNavigationScreens.Home.route) { HomeScreen() }
         composable(BottomNavigationScreens.Events.route) { Events() }
-        composable(BottomNavigationScreens.Map.route) { Map() }
+        composable(BottomNavigationScreens.Favourite.route) { Favourite() }
         composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel, navController) }
     }
 }
