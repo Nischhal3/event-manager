@@ -1,24 +1,64 @@
 package com.example.eventmanager.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.eventmanager.EventRepository
 import com.example.eventmanager.viewmodel.Event
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EventList() {
+    val eventRep = EventRepository()
+    val getAllData = eventRep.getAllData()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = MaterialTheme.colors.primary,
+                title = { Text("Event list") }
+            )
+        }
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(vertical = 25.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "\uD83C\uDF3F  Plants in Cosmetics",
+                        style = MaterialTheme.typography.h3
+                    )
+                }
+            }
+            items(items = getAllData) { plant ->
+                PlantCard(plant.name, plant.date, plant.image)
+            }
+        }
+    }
+}
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun EventList1() {
     val categories = listOf("Sports", "Music", "Food", "Art")
     val eventRep = EventRepository()
     val getAllData = eventRep.getAllData()
@@ -47,6 +87,7 @@ fun EventList() {
         //}
     }
 }
+
 
 @Composable
 fun EventCard(event: Event) {
@@ -78,3 +119,37 @@ fun EventCard(event: Event) {
         )
     }
 }}
+@Composable
+fun PlantCard(name: String, description: String, image: Int) {
+    Card(
+        modifier = Modifier.padding(10.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        shape = MaterialTheme.shapes.medium,
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colors.surface
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = null,
+                modifier = Modifier.size(130.dp)
+                    .padding(8.dp),
+                contentScale = ContentScale.Fit,
+            )
+            Column(Modifier.padding(8.dp)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h4,
+                    color = MaterialTheme.colors.onSurface,
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.body2,
+                )
+            }
+        }
+    }
+}
