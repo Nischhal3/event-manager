@@ -18,16 +18,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.ui.theme.Purple500
 import com.example.eventmanager.viewmodel.DateAndTimeViewModel
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun Events() {
-    var eventName by remember {
+fun Events(userId: Long?, userViewModel: UserViewModel) {
+    val eventList = userViewModel.getAllEvent().observeAsState(listOf())
+    eventList.value.forEach {
+        Log.d("user", "from event screen ${it.uid}: ${it.event_name}")
+    }
+    Log.d("user", "from event screen ${eventList.value.size}")
+    var name by remember {
         mutableStateOf("")
     }
-    var eventDate by remember {
+    var category by remember {
         mutableStateOf("")
     }
     var city by remember {
@@ -52,7 +59,7 @@ fun Events() {
     var isEnabled = true
 
     // Disabling button if any of these text fields are empty
-    if (city.isEmpty() || postalCode.isEmpty() || street.isEmpty() || country.isEmpty() || date.isEmpty() || time.isEmpty()) {
+    if (name.isEmpty() || category.isEmpty() || city.isEmpty() || postalCode.isEmpty() || street.isEmpty() || country.isEmpty() || date.isEmpty() || time.isEmpty()) {
         isEnabled = false
     }
     val context = LocalContext.current
@@ -64,6 +71,32 @@ fun Events() {
             .padding(top = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "passwordIcon"
+                )
+            },
+            label = { Text(text = "Name", color = MainText) },
+            placeholder = { Text(text = "City") },
+            modifier = Modifier.padding(vertical = 3.dp)
+        )
+        TextField(
+            value = category,
+            onValueChange = { category = it },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "passwordIcon"
+                )
+            },
+            label = { Text(text = "Category", color = MainText) },
+            placeholder = { Text(text = "City") },
+            modifier = Modifier.padding(vertical = 3.dp)
+        )
         TextField(
             value = city,
             onValueChange = { city = it },
@@ -138,7 +171,31 @@ fun Events() {
             Text("Use current Location")
         }*/
         Spacer(modifier = Modifier.padding(5.dp))
-        Button(onClick = { /*TODO*/ }, enabled = isEnabled)
+        Button(onClick = {
+            if (userId != null) {
+                userViewModel.addEvent(
+                    Event(
+                        userId,
+                        name,
+                        category,
+                        city,
+                        street,
+                        postalCode,
+                        country,
+                        date,
+                        time
+                    )
+                )
+            }
+            name = ""
+            category = ""
+            city = ""
+            street = ""
+            postalCode = ""
+            country = ""
+            date = ""
+            time = ""
+        }, enabled = isEnabled)
         {
             Text("Add Event")
 
@@ -164,7 +221,7 @@ fun Events() {
                     // View model method call in onClick event
                     dateAndTimeViewModel.selectDateTime(context)
                     dateAndTimeViewModel.time.observe(context as MainActivity) {
-                       time = it
+                        time = it
                     }
                     dateAndTimeViewModel.date.observe(context) {
                         date = it
