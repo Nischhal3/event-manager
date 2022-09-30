@@ -173,26 +173,26 @@ fun loginScreen(
 
                     Button(
                         onClick = {
-                            // userList.value.map {
-                            //   if (it.user_name == userName.value && it.password == password.value) {
+                            userList.value.map {
+                                if (it.user_name == userName.value && it.password == password.value) {
                                     navController.navigate("main") {
                                         popUpTo("login") { inclusive = true }
-                                           }
-                                        //   } else {
-                                        //       Toast.makeText(
-                                        //          context,
-                                        //            "Invalid username or password",
-                                        //           Toast.LENGTH_SHORT
-                                        //       ).show()
-                                        //    }
-                                        //  }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Invalid username or password",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Secondary,
                             Color.White
                         ),
                         shape = MaterialTheme.shapes.medium,
-                        // enabled = isEnabled
+                        enabled = isEnabled
 
                     ) {
                         Text(text = "Log In")
@@ -201,5 +201,5 @@ fun loginScreen(
             }
         }
     }
-    return  userName
+    return userName
 }

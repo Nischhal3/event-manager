@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 /**
  * Instance of the User and Event database
  */
-@Database(entities = [(User::class), (Event::class)], version = 2)
+@Database(entities = [(User::class), (Event::class)], version = 3)
 abstract class UserDB : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun eventDao(): EventDao
