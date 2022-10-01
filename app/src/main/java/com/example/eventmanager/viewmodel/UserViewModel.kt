@@ -75,6 +75,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         userDB.eventDao().getAllEvent()
 
     /**
+     * @return List of Events
+     */
+    fun getAllEventByUserId(userID: Long): LiveData<List<Event>> =
+        userDB.eventDao().getAllEventByUserId(userID)
+
+    /**
      * @param event
      * Adds event to the database
      */
