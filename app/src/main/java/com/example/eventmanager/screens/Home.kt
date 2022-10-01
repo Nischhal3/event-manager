@@ -13,11 +13,13 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +29,7 @@ import com.example.eventmanager.ui.theme.Background
 
 @Composable
 fun HomeScreen() {
-    Box(Modifier.verticalScroll(rememberScrollState())) {
+    Box() {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,7 +38,7 @@ fun HomeScreen() {
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
-        Column {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
             Spacer(modifier = Modifier.padding(top = 36.dp))
             Content()
         }
@@ -55,7 +57,12 @@ fun AppBar() {
         TextField(
             value = "",
             onValueChange = {},
-            label = { Text(text = "Search Events, Places, etc.", fontSize = 12.sp) },
+            label = {
+                Text(
+                    text = "Search Events, Places, etc.",
+                    fontSize = 12.sp,
+                )
+            },
             singleLine = true,
             leadingIcon = {
                 Icon(
@@ -91,9 +98,12 @@ fun AppBar() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Content() {
-    Column {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(modifier = Modifier.clickable { keyboardController?.hide() }) {
         AppBar()
         Spacer(modifier = Modifier.height(56.dp))
         CategorySection()
