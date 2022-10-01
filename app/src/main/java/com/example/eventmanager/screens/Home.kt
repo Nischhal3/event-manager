@@ -35,7 +35,8 @@ import com.example.eventmanager.viewmodel.UserViewModel
 @Composable
 fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
     // Fetching list of events by userId
-    val eventListByUser = userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
+    val eventListByUser =
+        userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
 
     Box(Modifier.verticalScroll(rememberScrollState())) {
         Image(
@@ -222,98 +223,33 @@ fun EventItems(eventListByUser: State<List<Event>>?) {
     ) {
         if (eventListByUser != null) {
             items(eventListByUser.value) {
-                Text("${it.event_name}  ${it.country}")
-            }
-        }
-    }
-/*    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event1),
-                title = "Group Dinner",
-                location = "Long address, postal code, Helsinki",
-                participants = 10
-            )
-        }
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event2),
-                title = "Music concert",
-                location = "Espoo",
-                participants = 200
-            )
-        }
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event3),
-                title = "Conference",
-                location = "Vantaa",
-                participants = 20
-            )
-        }
-    }*/
-}
-
-@Composable
-fun EventItem(
-    title: String = "",
-    location: String = "",
-    participants: Int = 0,
-    imagePainter: Painter
-) {
-    Card(
-        elevation = 4.dp,
-        shape = RoundedCornerShape(18.dp),
-        modifier = Modifier
-            .width(200.dp)
-            .height(300.dp)
-
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-
-
-        ) {
-            Image(
-                painter = imagePainter,
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.FillHeight
-            )
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, start = 8.dp, end = 8.dp)
-            ) {
-                Text(text = title, fontWeight = FontWeight.Bold)
-
-                Text(text = "$participants", color = MaterialTheme.colors.primary)
-
-                Row() {
-                    Icon(
-                        Icons.Default.Place,
-                        "contentDescription",
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(top = 5.dp),
-                        tint = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
+                //Text("${it.event_name}  ${it.country}")
+                Row(
+                    modifier = Modifier
+                        .background(Color.LightGray)
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Text(
-                        text = location,
-                        color = Color.Gray
+                        text = "${it.date}",
+                        color = Color.Black,
+                        //fontSize = 24.dp,
+                        //fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "${it.event_name}",
+                        color = Color.Black,
+                        //fontSize = 22.dp,
+                        //fontWeight = FontWeight.Normal
+                    )
+                    Text(
+                        text = "${it.country}",
+                        color = Color.Black,
+
                     )
                 }
-
-
             }
         }
     }
