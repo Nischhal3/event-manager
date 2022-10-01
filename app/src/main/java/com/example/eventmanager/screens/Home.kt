@@ -194,7 +194,7 @@ fun CategoryButton(
 
 @Composable
 fun EventSection(eventListByUser: State<List<Event>>?) {
-    Column() {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -224,33 +224,47 @@ fun EventItems(eventListByUser: State<List<Event>>?) {
         if (eventListByUser != null) {
             items(eventListByUser.value) {
                 //Text("${it.event_name}  ${it.country}")
-                Row(
-                    modifier = Modifier
-                        .background(Color.LightGray)
-                        .fillMaxWidth()
-                        .padding(24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "${it.date}",
-                        color = Color.Black,
-                        //fontSize = 24.dp,
-                        //fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "${it.event_name}",
-                        color = Color.Black,
-                        //fontSize = 22.dp,
-                        //fontWeight = FontWeight.Normal
-                    )
-                    Text(
-                        text = "${it.country}",
-                        color = Color.Black,
 
-                    )
+                Card(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .width(340.dp)
+                        .wrapContentHeight(),
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = 5.dp,
+                    backgroundColor = MaterialTheme.colors.surface
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.event1),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(130.dp)
+                                .padding(8.dp),
+                            contentScale = ContentScale.Fit,
+                        )
+                        Column(Modifier.padding(8.dp)) {
+                            Text(
+                                text = "${it.event_name}",
+                                style = MaterialTheme.typography.h5,
+                                color = MaterialTheme.colors.onSurface,
+                            )
+                            Text(
+                                text = "${it.country}",
+                                style = MaterialTheme.typography.body2,
+                            )
+                            Text(
+                                text = "${it.date}",
+                                style = MaterialTheme.typography.body2,
+                            )
+                        }
+                    }
                 }
+
             }
         }
     }
 }
+
