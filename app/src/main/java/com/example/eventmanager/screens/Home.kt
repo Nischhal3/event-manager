@@ -194,7 +194,7 @@ fun CategoryButton(
 
 @Composable
 fun EventSection(eventListByUser: State<List<Event>>?) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    Column {
         Row(
             Modifier
                 .fillMaxWidth()
