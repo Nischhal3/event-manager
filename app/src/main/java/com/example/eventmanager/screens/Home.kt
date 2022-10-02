@@ -17,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,12 +35,14 @@ import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
+
 fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
     // Fetching list of events by userId
     val eventListByUser =
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
 
-    Box(Modifier.verticalScroll(rememberScrollState())) {
+    Box {
+
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,7 +51,7 @@ fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
-        Column {
+        Column() {
             Spacer(modifier = Modifier.padding(top = 36.dp))
             Content(eventListByUser)
         }
@@ -66,7 +70,12 @@ fun AppBar() {
         TextField(
             value = "",
             onValueChange = {},
-            label = { Text(text = "Search Events, Places, etc.", fontSize = 12.sp) },
+            label = {
+                Text(
+                    text = "Search Events, Places, etc.",
+                    fontSize = 12.sp,
+                )
+            },
             singleLine = true,
             leadingIcon = {
                 Icon(
@@ -102,9 +111,15 @@ fun AppBar() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
+
 fun Content(eventListByUser: State<List<Event>>?) {
-    Column {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(modifier = Modifier.clickable { keyboardController?.hide() }) {
+
         AppBar()
         Spacer(modifier = Modifier.height(56.dp))
         CategorySection()
@@ -194,7 +209,7 @@ fun CategoryButton(
 
 @Composable
 fun EventSection(eventListByUser: State<List<Event>>?) {
-    Column {
+    Column(modifier = Modifier.padding(bottom = 50.dp).verticalScroll(rememberScrollState())) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -216,55 +231,52 @@ fun EventSection(eventListByUser: State<List<Event>>?) {
 fun EventItems(eventListByUser: State<List<Event>>?) {
     eventListByUser?.value?.forEach {
         Log.d("user", "from Content screen user ${it.uid}: ${it.event_name}")
-    }
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
         if (eventListByUser != null) {
-            items(eventListByUser.value) {
-                //Text("${it.event_name}  ${it.country}")
-
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .width(340.dp)
-                        .wrapContentHeight(),
-                    shape = MaterialTheme.shapes.medium,
-                    elevation = 5.dp,
-                    backgroundColor = MaterialTheme.colors.surface
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.event1),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(130.dp)
-                                .padding(8.dp),
-                            contentScale = ContentScale.Fit,
-                        )
-                        Column(Modifier.padding(8.dp)) {
-                            Text(
-                                text = "${it.event_name}",
-                                style = MaterialTheme.typography.h5,
-                                color = MaterialTheme.colors.onSurface,
-                            )
-                            Text(
-                                text = "${it.country}",
-                                style = MaterialTheme.typography.body2,
-                            )
-                            Text(
-                                text = "${it.date}",
-                                style = MaterialTheme.typography.body2,
-                            )
-                        }
-                    }
-                }
-
+            Column(modifier = Modifier.padding(start = 15.dp)) {
+                EventCard(name = it.event_name, country = it.country, date = it.date)
             }
         }
     }
 }
 
+
+@Composable
+fun EventCard(name: String, country: String, date:String) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(340.dp)
+            .wrapContentHeight(),
+        shape = MaterialTheme.shapes.medium,
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colors.surface
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.event1),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(130.dp)
+                    .padding(8.dp),
+                contentScale = ContentScale.Fit,
+            )
+            Column(Modifier.padding(8.dp)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h5,
+                    color = MaterialTheme.colors.onSurface,
+                )
+                Text(
+                    text = country,
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    text = if(date != "") date else "Select a date",
+                    style = MaterialTheme.typography.body2,
+                )
+            }
+        }
+    }
+}
