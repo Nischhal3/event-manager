@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
@@ -36,7 +37,7 @@ import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
 
-fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
+fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavController) {
     // Fetching list of events by userId
     val eventListByUser =
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
@@ -53,7 +54,7 @@ fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
         )
         Column() {
             Spacer(modifier = Modifier.padding(top = 36.dp))
-            Content(eventListByUser)
+            Content(eventListByUser, navController)
         }
     }
 }
@@ -114,7 +115,7 @@ fun AppBar() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 
-fun Content(eventListByUser: State<List<Event>>?) {
+fun Content(eventListByUser: State<List<Event>>?, navController: NavController) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -125,7 +126,7 @@ fun Content(eventListByUser: State<List<Event>>?) {
         CategorySection()
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        EventSection(eventListByUser)
+        EventSection(eventListByUser, navController)
     }
 }
 
@@ -208,7 +209,7 @@ fun CategoryButton(
 }
 
 @Composable
-fun EventSection(eventListByUser: State<List<Event>>?) {
+fun EventSection(eventListByUser: State<List<Event>>?, navController: NavController) {
     Column(modifier = Modifier.padding(bottom = 50.dp).verticalScroll(rememberScrollState())) {
         Row(
             Modifier
@@ -218,7 +219,7 @@ fun EventSection(eventListByUser: State<List<Event>>?) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Upcoming Events", style = MaterialTheme.typography.h6)
-            TextButton(onClick = {}) {
+            TextButton(onClick = {navController.navigate("event") }) {
                 Text(text = "More", color = MaterialTheme.colors.primary)
             }
         }

@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.eventmanager.*
 import com.example.eventmanager.screens.Account
+import com.example.eventmanager.screens.Event
 import com.example.eventmanager.screens.Events
 import com.example.eventmanager.screens.HomeScreen
 import com.example.eventmanager.viewmodel.UserViewModel
@@ -50,9 +51,10 @@ fun MainNavHost(
         navController = navController,
         startDestination = BottomNavigationScreens.Home.route
     ) {
-        composable(BottomNavigationScreens.Home.route) { HomeScreen(userId, userViewModel) }
+        composable(BottomNavigationScreens.Home.route) { HomeScreen(userId, userViewModel, navController) }
         composable(BottomNavigationScreens.Events.route) { Events(userId,userViewModel) }
         composable(BottomNavigationScreens.Favourite.route) { Favourite() }
         composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel, navController) }
+        composable("event") { Event(navController, ) }
     }
 }
