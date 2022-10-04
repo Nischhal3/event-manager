@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
@@ -36,7 +37,7 @@ import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
 
-fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
+fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavController) {
     // Fetching list of events by userId
     val eventListByUser =
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
@@ -53,7 +54,7 @@ fun HomeScreen(userId: Long?, userViewModel: UserViewModel) {
         )
         Column() {
             Spacer(modifier = Modifier.padding(top = 36.dp))
-            Content(eventListByUser)
+            Content(eventListByUser, navController)
         }
     }
 }
@@ -114,7 +115,7 @@ fun AppBar() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 
-fun Content(eventListByUser: State<List<Event>>?) {
+fun Content(eventListByUser: State<List<Event>>?, navController: NavController) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -125,7 +126,7 @@ fun Content(eventListByUser: State<List<Event>>?) {
         CategorySection()
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        EventSection(eventListByUser)
+        EventSection(eventListByUser, navController)
     }
 }
 
@@ -208,8 +209,10 @@ fun CategoryButton(
 }
 
 @Composable
-fun EventSection(eventListByUser: State<List<Event>>?) {
-    Column(modifier = Modifier.padding(bottom = 50.dp).verticalScroll(rememberScrollState())) {
+fun EventSection(eventListByUser: State<List<Event>>?, navController: NavController) {
+    Column(modifier = Modifier
+        .padding(bottom = 50.dp)
+        .verticalScroll(rememberScrollState())) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -218,22 +221,27 @@ fun EventSection(eventListByUser: State<List<Event>>?) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Upcoming Events", style = MaterialTheme.typography.h6)
-            TextButton(onClick = {}) {
+            TextButton(onClick = { navController.navigate("event") }) {
                 Text(text = "More", color = MaterialTheme.colors.primary)
             }
         }
 
-        EventItems(eventListByUser)
+        EventItems(eventListByUser, navController)
     }
 }
 
 @Composable
-fun EventItems(eventListByUser: State<List<Event>>?) {
+fun EventItems(eventListByUser: State<List<Event>>?, navController: NavController) {
     eventListByUser?.value?.forEach {
         Log.d("user", "from Content screen user ${it.uid}: ${it.event_name}")
         if (eventListByUser != null) {
             Column(modifier = Modifier.padding(start = 15.dp)) {
-                EventCard(name = it.event_name, country = it.country, date = it.date)
+                EventCard(
+                    name = it.event_name,
+                    country = it.country,
+                    date = it.date,
+                    navController = navController
+                )
             }
         }
     }
@@ -241,12 +249,18 @@ fun EventItems(eventListByUser: State<List<Event>>?) {
 
 
 @Composable
-fun EventCard(name: String, country: String, date:String) {
+fun EventCard(
+    name: String,
+    country: String,
+    date: String,
+    navController: NavController
+) {
     Card(
         modifier = Modifier
             .padding(10.dp)
             .width(340.dp)
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .clickable { navController.navigate("details/$name/$date") },
         shape = MaterialTheme.shapes.medium,
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
@@ -273,7 +287,7 @@ fun EventCard(name: String, country: String, date:String) {
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
-                    text = if(date != "") date else "Select a date",
+                    text = if (date != "") date else "Select a date",
                     style = MaterialTheme.typography.body2,
                 )
             }
