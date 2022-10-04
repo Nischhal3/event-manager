@@ -1,33 +1,49 @@
-package com.example.eventmanager
+package com.example.eventmanager.screens
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.eventmanager.R
+import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
-fun HomeScreen() {
-    Box(Modifier.verticalScroll(rememberScrollState())) {
+
+fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavController) {
+    // Fetching list of events by userId
+    val eventListByUser =
+        userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
+
+    Box {
+
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,9 +52,9 @@ fun HomeScreen() {
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
-        Column {
+        Column() {
             Spacer(modifier = Modifier.padding(top = 36.dp))
-            Content()
+            Content(eventListByUser, navController)
         }
     }
 }
@@ -55,7 +71,12 @@ fun AppBar() {
         TextField(
             value = "",
             onValueChange = {},
-            label = { Text(text = "Search Events, Places, etc.", fontSize = 12.sp) },
+            label = {
+                Text(
+                    text = "Search Events, Places, etc.",
+                    fontSize = 12.sp,
+                )
+            },
             singleLine = true,
             leadingIcon = {
                 Icon(
@@ -91,15 +112,21 @@ fun AppBar() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Content() {
-    Column {
+
+fun Content(eventListByUser: State<List<Event>>?, navController: NavController) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(modifier = Modifier.clickable { keyboardController?.hide() }) {
+
         AppBar()
         Spacer(modifier = Modifier.height(56.dp))
         CategorySection()
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        EventSection()
+        EventSection(eventListByUser, navController)
     }
 }
 
@@ -182,8 +209,10 @@ fun CategoryButton(
 }
 
 @Composable
-fun EventSection() {
-    Column() {
+fun EventSection(eventListByUser: State<List<Event>>?, navController: NavController) {
+    Column(modifier = Modifier
+        .padding(bottom = 50.dp)
+        .verticalScroll(rememberScrollState())) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -192,105 +221,75 @@ fun EventSection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Upcoming Events", style = MaterialTheme.typography.h6)
-            TextButton(onClick = {}) {
+            TextButton(onClick = { navController.navigate("event") }) {
                 Text(text = "More", color = MaterialTheme.colors.primary)
             }
         }
 
-        EventItems()
+        EventItems(eventListByUser, navController)
     }
 }
 
 @Composable
-fun EventItems() {
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event1),
-                title = "Group Dinner",
-                location = "Long address, postal code, Helsinki",
-                participants = 10
-            )
-        }
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event2),
-                title = "Music concert",
-                location = "Espoo",
-                participants = 200
-            )
-        }
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event3),
-                title = "Conference",
-                location = "Vantaa",
-                participants = 20
-            )
+fun EventItems(eventListByUser: State<List<Event>>?, navController: NavController) {
+    eventListByUser?.value?.forEach {
+        Log.d("user", "from Content screen user ${it.uid}: ${it.event_name}")
+        if (eventListByUser != null) {
+            Column(modifier = Modifier.padding(start = 15.dp)) {
+                EventCard(
+                    name = it.event_name,
+                    country = it.country,
+                    date = it.date,
+                    navController = navController
+                )
+            }
         }
     }
 }
 
+
 @Composable
-fun EventItem(
-    title: String = "",
-    location: String = "",
-    participants: Int = 0,
-    imagePainter: Painter
+fun EventCard(
+    name: String,
+    country: String,
+    date: String,
+    navController: NavController
 ) {
     Card(
-        elevation = 4.dp,
-        shape = RoundedCornerShape(18.dp),
         modifier = Modifier
-            .width(200.dp)
-            .height(300.dp)
-
+            .padding(10.dp)
+            .width(340.dp)
+            .wrapContentHeight()
+            .clickable { navController.navigate("details/$name/$date") },
+        shape = MaterialTheme.shapes.medium,
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colors.surface
     ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-
-
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = imagePainter,
-                contentDescription = "",
+                painter = painterResource(id = R.drawable.event1),
+                contentDescription = null,
                 modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.FillHeight
+                    .size(130.dp)
+                    .padding(8.dp),
+                contentScale = ContentScale.Fit,
             )
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, start = 8.dp, end = 8.dp)
-            ) {
-                Text(text = title, fontWeight = FontWeight.Bold)
-
-                Text(text = "$participants", color = MaterialTheme.colors.primary)
-
-                Row() {
-                    Icon(
-                        Icons.Default.Place,
-                        "contentDescription",
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(top = 5.dp),
-                        tint = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Text(
-                        text = location,
-                        color = Color.Gray
-                    )
-                }
-
-
+            Column(Modifier.padding(8.dp)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h5,
+                    color = MaterialTheme.colors.onSurface,
+                )
+                Text(
+                    text = country,
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    text = if (date != "") date else "Select a date",
+                    style = MaterialTheme.typography.body2,
+                )
             }
         }
     }

@@ -16,6 +16,13 @@ interface EventDao {
     fun getAllEvent(): LiveData<List<Event>>
 
     /**
+     * @param userId
+     * @return list of event by userId
+     */
+    @Query("SELECT * FROM Event WHERE uid = :userId")
+    fun getAllEventByUserId(userId: Long): LiveData<List<Event>>
+
+    /**
      * @param event
      * Adds event to the database
      */

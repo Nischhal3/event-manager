@@ -28,7 +28,13 @@ data class Event(
     val uid: Long,
     @PrimaryKey
     val event_name: String,
-    val location: String,
+    val category: String,
+    val city: String,
+    val postalCode: String,
+    val street: String,
+    val country: String,
+    val date: String,
+    val time: String,
 )
 
 class UserAndEvent(
