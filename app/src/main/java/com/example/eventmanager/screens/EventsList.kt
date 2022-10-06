@@ -49,7 +49,7 @@ fun EventList(navController: NavController) {
 
     }
 }
-@Composable
+/*@Composable
 fun EventList2() {
     val eventRep = EventRepository()
     val getAllData = eventRep.getAllData()
@@ -84,7 +84,8 @@ fun EventList2() {
             }
         }
     }
-}
+}*/
+/*
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EventList1() {
@@ -116,6 +117,7 @@ fun EventList1() {
         //}
     }
 }
+*/
 
 
 @Composable
@@ -147,7 +149,7 @@ fun EventCard(event: Event) {
             fontWeight = FontWeight.Normal
         )
     }
-}}
+}
 @Composable
 fun PlantCard(name: String, description: String, image: Int) {
     Card(

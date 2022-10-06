@@ -13,8 +13,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -23,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
@@ -38,9 +39,15 @@ import com.example.eventmanager.viewmodel.UserViewModel
 @Composable
 
 fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavController) {
+    var value by remember {
+        mutableStateOf("...")
+    }
     // Fetching list of events by userId
     val eventListByUser =
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
+    val context = LocalContext.current
+
+    
 
     Box {
 
@@ -53,6 +60,8 @@ fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavCo
             contentScale = ContentScale.FillWidth
         )
         Column() {
+            Spacer(modifier = Modifier.padding(top = 36.dp))
+            //Text(text = "hello $value")
             Spacer(modifier = Modifier.padding(top = 36.dp))
             Content(eventListByUser, navController)
         }
