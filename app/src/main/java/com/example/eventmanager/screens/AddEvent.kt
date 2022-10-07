@@ -32,7 +32,7 @@ import com.example.eventmanager.viewmodel.UserViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Events(userId: Long?, userViewModel: UserViewModel) {
+fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
     // val eventList = userViewModel.getAllEvent().observeAsState(listOf())
     var name by remember {
         mutableStateOf("")
