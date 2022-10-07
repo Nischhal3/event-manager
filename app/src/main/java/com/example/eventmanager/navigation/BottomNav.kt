@@ -1,16 +1,21 @@
 package com.example.eventmanager.navigation
 
 
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.eventmanager.screens.*
 
 import com.example.eventmanager.viewmodel.UserViewModel
@@ -19,14 +24,11 @@ import com.example.eventmanager.viewmodel.UserViewModel
 sealed class BottomNavigationScreens(val route: String, val label: String, val icon: ImageVector) {
     object Home : BottomNavigationScreens("home", "Home", Icons.Default.Home)
     object Events : BottomNavigationScreens("events", "Add Event", Icons.Default.CalendarToday)
-    object Favourite : BottomNavigationScreens("favourite", "Favourite", Icons.Default.Favorite)
     object Account : BottomNavigationScreens("account", "Account", Icons.Default.Person)
 }
 
 val bottomNavigationItems = listOf(
     BottomNavigationScreens.Home,
-    BottomNavigationScreens.Events,
-    BottomNavigationScreens.Favourite,
     BottomNavigationScreens.Account,
 )
 
@@ -50,7 +52,6 @@ fun MainNavHost(
     ) {
         composable(BottomNavigationScreens.Home.route) { HomeScreen(userId, userViewModel, navController) }
         composable(BottomNavigationScreens.Events.route) { Events(userId,userViewModel) }
-        composable(BottomNavigationScreens.Favourite.route) { Favourite() }
         composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel, navController) }
         composable("event") { EventList(navController ) }
         composable("details" + "/{name}" + "/{date}") {navBackStack ->
