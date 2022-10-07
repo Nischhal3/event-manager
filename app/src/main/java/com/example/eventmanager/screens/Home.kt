@@ -3,13 +3,9 @@ package com.example.eventmanager.screens
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
@@ -18,27 +14,31 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.viewmodel.UserViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Composable
 
-fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavController) {
+fun HomeScreen(
+    userId: Long?,
+    userViewModel: UserViewModel,
+    navController: NavController,
+) {
     var value by remember {
         mutableStateOf("...")
     }
@@ -47,7 +47,7 @@ fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavCo
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
     val context = LocalContext.current
 
-    
+
 
     Box {
 
@@ -69,17 +69,17 @@ fun HomeScreen(userId: Long?, userViewModel: UserViewModel, navController: NavCo
 }
 
 @Composable
-fun AppBar() {
+fun AppBar(state: MutableState<TextFieldValue>) {
     Row(
         Modifier
             .padding(16.dp)
-            .height(48.dp),
+            .height(55.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         TextField(
-            value = "",
-            onValueChange = {},
+            value = state.value,
+            onValueChange = { value -> state.value = value },
             label = {
                 Text(
                     text = "Search Events, Places, etc.",
@@ -124,18 +124,26 @@ fun AppBar() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 
-fun Content(eventListByUser: State<List<Event>>?, navController: NavController) {
+fun Content(
+    eventListByUser: State<List<Event>>?,
+    navController: NavController,
+) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
 
     Column(modifier = Modifier.clickable { keyboardController?.hide() }) {
 
-        AppBar()
-        Spacer(modifier = Modifier.height(56.dp))
+        AppBar(textState)
+        Spacer(modifier = Modifier.height(16.dp))
         CategorySection()
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        EventSection(eventListByUser, navController)
+        ListOfEvents(
+            eventListByUser = eventListByUser,
+            navController = navController,
+            state = textState
+        )
     }
 }
 
@@ -218,10 +226,17 @@ fun CategoryButton(
 }
 
 @Composable
-fun EventSection(eventListByUser: State<List<Event>>?, navController: NavController) {
-    Column(modifier = Modifier
-        .padding(bottom = 50.dp)
-        .verticalScroll(rememberScrollState())) {
+fun ListOfEvents(
+    eventListByUser: State<List<Event>>?,
+    navController: NavController,
+    state: MutableState<TextFieldValue>
+) {
+
+    Column(
+        modifier = Modifier
+            .padding(bottom = 50.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -235,22 +250,40 @@ fun EventSection(eventListByUser: State<List<Event>>?, navController: NavControl
             }
         }
 
-        EventItems(eventListByUser, navController)
-    }
-}
+        eventListByUser?.value?.forEach {
+            Log.d("user", "from Content screen user ${it.uid}: ${it.event_name}")
+            if (eventListByUser != null) {
+                val searchedText = state.value.text
 
-@Composable
-fun EventItems(eventListByUser: State<List<Event>>?, navController: NavController) {
-    eventListByUser?.value?.forEach {
-        Log.d("user", "from Content screen user ${it.uid}: ${it.event_name}")
-        if (eventListByUser != null) {
-            Column(modifier = Modifier.padding(start = 15.dp)) {
-                EventCard(
-                    name = it.event_name,
-                    country = it.country,
-                    date = it.date,
-                    navController = navController
-                )
+                if (searchedText.isEmpty()) {
+
+                    Column(modifier = Modifier.padding(start = 15.dp)) {
+                        EventCard(
+                            name = it.event_name,
+                            country = it.country,
+                            date = it.date,
+                            navController = navController
+                        )
+                    }
+                } else {
+                    val resultList = ArrayList<Event>()
+                    if (it.event_name.lowercase(Locale.getDefault())
+                            .contains(searchedText.lowercase(Locale.getDefault()))
+                    ) {
+                        resultList.add(it)
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 15.dp)
+                        ) {
+                            EventCard(
+                                name = it.event_name,
+                                country = it.country,
+                                date = it.date,
+                                navController = navController
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -296,7 +329,7 @@ fun EventCard(
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
-                    text = if (date != "") date else "Select a date",
+                    text = date,
                     style = MaterialTheme.typography.body2,
                 )
             }

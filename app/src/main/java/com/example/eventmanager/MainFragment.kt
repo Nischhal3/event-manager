@@ -27,7 +27,7 @@ import com.example.eventmanager.viewmodel.UserViewModel
 fun MainFragment(
     authNavController: NavController,
     userName: MutableState<String>,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
 ) {
     val navController = rememberNavController()
     Scaffold(

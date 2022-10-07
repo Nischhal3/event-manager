@@ -37,7 +37,7 @@ fun MainNavHost(
     authController: NavController,
     navController: NavHostController,
     userName: MutableState<String>,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
 ) {
     var userId: Long? = null
     val userList = userViewModel.getAllUser().observeAsState(listOf())
