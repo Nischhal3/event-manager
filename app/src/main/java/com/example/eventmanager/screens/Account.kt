@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,10 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import coil.compose.rememberImagePainter
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.navigation.AuthNavigationScreens
 import com.example.eventmanager.navigation.BottomNavigationScreens
+import com.example.eventmanager.ui.theme.Gray
 import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.ui.theme.purplish
@@ -63,10 +66,9 @@ fun Account(
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
         notification.value = ""
     }
-
-    var name by rememberSaveable { mutableStateOf("default name") }
+    var name by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("default username") }
-    var bio by rememberSaveable { mutableStateOf("default bio") }
+    var bio by rememberSaveable { mutableStateOf("Something about me") }
 
     Column(
         modifier = Modifier
@@ -79,10 +81,15 @@ fun Account(
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Cancel",
-                modifier = Modifier.clickable { notification.value = "Cancelled" }, color = MainText)
-            Text(text = "Save",
-                modifier = Modifier.clickable { notification.value = "Profile updated"}, color = MainText)
+            Text(
+                text = "Cancel",
+                modifier = Modifier.clickable { notification.value = "Cancelled" }, color = MainText
+            )
+            Text(
+                text = "Save",
+                modifier = Modifier.clickable { notification.value = "Profile updated" },
+                color = MainText
+            )
         }
 
         ProfileImage()
@@ -95,7 +102,7 @@ fun Account(
         ) {
             Text(text = "Name", modifier = Modifier.width(100.dp))
             TextField(
-                value = name,
+                value = "${user.value?.first_name}",
                 onValueChange = { name = it },
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
@@ -112,7 +119,7 @@ fun Account(
         ) {
             Text(text = "Username", modifier = Modifier.width(100.dp))
             TextField(
-                value = username,
+                value = userNameAsString,
                 onValueChange = { username = it },
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
@@ -170,6 +177,12 @@ fun Account(
 @Composable
 fun ProfileImage() {
     val imageUri = rememberSaveable { mutableStateOf("") }
+    val painter = rememberImagePainter(
+        if (imageUri.value.isEmpty())
+            R.drawable.ic_user
+        else
+            imageUri.value
+    )
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -189,7 +202,7 @@ fun ProfileImage() {
                 .size(100.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_user),
+                painter = painter,
                 contentDescription = null,
                 modifier = Modifier
                     .wrapContentSize()
@@ -197,6 +210,6 @@ fun ProfileImage() {
                 contentScale = ContentScale.Crop
             )
         }
-        Text(text = "Change profile picture")
+        Text(text = "Change profile picture", color = Gray)
     }
 }
