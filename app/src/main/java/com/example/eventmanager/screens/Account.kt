@@ -166,6 +166,13 @@ fun Account(
         }) {
             Text("Log out")
         }
+        Button(onClick = {
+            userViewModel.deleteUser(userNameAsString)
+            isLoggedOut.value = true
+            Log.d("user", "Clicked $isLoggedOut")
+        }) {
+            Text("Delete Account")
+        }
     }
     if (isLoggedOut.value) {
         Log.d("user", "Clicked ${isLoggedOut.value}")

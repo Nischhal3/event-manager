@@ -1,10 +1,8 @@
 package com.example.eventmanager.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.database.User
@@ -55,7 +53,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deleteUser(userName: String){
         viewModelScope.launch {
-
+            userDB.userDao().deleteUser(userName)
         }
     }
 
@@ -94,9 +92,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
      * @param event
      * Updates event in the database
      */
-    fun updateEvent(event: Event) {
+    fun deleteEvent(eventName: String) {
         viewModelScope.launch {
-            userDB.eventDao().updateEvent(event)
+            userDB.eventDao().deleteEvent(eventName)
         }
     }
 }
