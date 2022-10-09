@@ -31,7 +31,7 @@ interface EventDao {
 
     /**
      * @param event
-     * Updates event in the detabase
+     * Updates event in the database
      */
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateEvent(event: Event)
@@ -41,5 +41,5 @@ interface EventDao {
      * Deletes event from the database
      */
     @Query("DELETE FROM event WHERE event.event_name= :eventName")
-    suspend  fun deleteUse(eventName: String)
+    suspend  fun deleteEvent(eventName: String)
 }

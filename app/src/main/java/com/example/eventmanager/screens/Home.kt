@@ -1,11 +1,9 @@
 package com.example.eventmanager.screens
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -50,8 +48,6 @@ fun HomeScreen(
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
     val context = LocalContext.current
 
-
-
     Box {
 
         Image(
@@ -66,7 +62,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.padding(top = 36.dp))
             //Text(text = "hello $value")
             Spacer(modifier = Modifier.padding(top = 36.dp))
-            Content(eventListByUser, navController)
+            Content(eventListByUser, navController,userViewModel)
         }
     }
 }
@@ -132,6 +128,7 @@ fun AppBar(state: MutableState<TextFieldValue>) {
 fun Content(
     eventListByUser: State<List<Event>>?,
     navController: NavController,
+    userViewModel: UserViewModel,
 ) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -146,6 +143,7 @@ fun Content(
         Spacer(modifier = Modifier.height(16.dp))
         ListOfEvents(
             eventListByUser = eventListByUser,
+            userViewModel = userViewModel,
             navController = navController,
             state = textState
         )
@@ -231,7 +229,8 @@ fun CategoryButton(
 fun ListOfEvents(
     eventListByUser: State<List<Event>>?,
     navController: NavController,
-    state: MutableState<TextFieldValue>
+    state: MutableState<TextFieldValue>,
+    userViewModel: UserViewModel
 ) {
 
     Column(
@@ -250,43 +249,42 @@ fun ListOfEvents(
         }
 
         eventListByUser?.value?.let { it ->
-            if (eventListByUser != null) {
-                val searchedText = state.value.text
-                if (searchedText.isEmpty()) {
-
-                    LazyColumn(
-                        modifier = Modifier
-                            .height(550.dp)
-                            .padding(start = 15.dp, top = 15.dp)
-                    ) {
-                        items(it) { item ->
-                            EventCard(
-                                name = item.event_name,
-                                country = item.country,
-                                date = item.date,
-                                navController = navController
-                            )
-                        }
+            val searchedText = state.value.text
+            if (searchedText.isEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .height(550.dp)
+                        .padding(start = 15.dp, top = 15.dp)
+                ) {
+                    items(it) { item ->
+                        EventCard(
+                            name = item.event_name,
+                            country = item.country,
+                            date = item.date,
+                            userViewModel = userViewModel,
+                            navController = navController
+                        )
                     }
+                }
 
-                } else {
-                    val resultList = ArrayList<Event>()
-                    eventListByUser.value.forEach {
-                        if (it.event_name.lowercase(Locale.getDefault())
-                                .contains(searchedText.lowercase(Locale.getDefault()))
+            } else {
+                val resultList = ArrayList<Event>()
+                eventListByUser.value.forEach {
+                    if (it.event_name.lowercase(Locale.getDefault())
+                            .contains(searchedText.lowercase(Locale.getDefault()))
+                    ) {
+                        resultList.add(it)
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 15.dp)
                         ) {
-                            resultList.add(it)
-                            Column(
-                                modifier = Modifier
-                                    .padding(start = 15.dp)
-                            ) {
-                                EventCard(
-                                    name = it.event_name,
-                                    country = it.country,
-                                    date = it.date,
-                                    navController = navController
-                                )
-                            }
+                            EventCard(
+                                name = it.event_name,
+                                country = it.country,
+                                date = it.date,
+                                navController = navController,
+                                userViewModel = userViewModel
+                            )
                         }
                     }
                 }
@@ -301,7 +299,8 @@ fun EventCard(
     name: String,
     country: String,
     date: String,
-    navController: NavController
+    navController: NavController,
+    userViewModel: UserViewModel
 ) {
     Card(
         modifier = Modifier
@@ -338,6 +337,11 @@ fun EventCard(
                     text = date,
                     style = MaterialTheme.typography.body2,
                 )
+                Button(onClick = {
+                    userViewModel.deleteEvent(name)
+                }) {
+                    Text("Delete event")
+                }
             }
         }
     }
