@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.eventmanager.viewmodel.Event
+import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
 fun EventList(
