@@ -141,7 +141,7 @@ fun Content(
 
         AppBar(textState)
         Spacer(modifier = Modifier.height(16.dp))
-        CategorySection()
+        // CategorySection()
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))
         ListOfEvents(
@@ -166,9 +166,6 @@ fun CategorySection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Category", style = MaterialTheme.typography.h6)
-            TextButton(onClick = {}) {
-                Text(text = "More", color = MaterialTheme.colors.primary)
-            }
         }
 
         Row(
@@ -250,9 +247,6 @@ fun ListOfEvents(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Upcoming Events", style = MaterialTheme.typography.h6)
-            TextButton(onClick = { navController.navigate("event") }) {
-                Text(text = "More", color = MaterialTheme.colors.primary)
-            }
         }
 
         eventListByUser?.value?.let { it ->
@@ -260,9 +254,11 @@ fun ListOfEvents(
                 val searchedText = state.value.text
                 if (searchedText.isEmpty()) {
 
-                    LazyColumn(modifier = Modifier
-                        .height(300.dp)
-                        .padding(start = 15.dp)) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .height(550.dp)
+                            .padding(start = 15.dp, top = 15.dp)
+                    ) {
                         items(it) { item ->
                             EventCard(
                                 name = item.event_name,

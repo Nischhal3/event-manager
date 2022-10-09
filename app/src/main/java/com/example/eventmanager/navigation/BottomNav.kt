@@ -48,7 +48,6 @@ fun MainNavHost(
         composable(BottomNavigationScreens.Home.route) { HomeScreen(userId, userViewModel, navController) }
         composable(BottomNavigationScreens.Events.route) { AddEvent(userId,userViewModel) }
         composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel, navController) }
-        composable("event") { EventList(navController) }
         composable("details" + "/{name}" + "/{date}") {navBackStack ->
             val eventName = navBackStack.arguments?.getString("name")
             val date = navBackStack.arguments?.getString("date")
