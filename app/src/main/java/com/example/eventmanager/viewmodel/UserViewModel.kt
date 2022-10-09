@@ -53,7 +53,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deleteUser(userName: String){
         viewModelScope.launch {
-
+            userDB.userDao().deleteUser(userName)
         }
     }
 
