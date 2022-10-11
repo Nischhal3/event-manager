@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
@@ -17,6 +18,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
@@ -32,6 +34,9 @@ import androidx.navigation.NavController
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
+import com.example.eventmanager.ui.theme.Gray
+import com.example.eventmanager.ui.theme.Main
+import com.example.eventmanager.ui.theme.delete
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
 import kotlin.collections.ArrayList
@@ -329,9 +334,9 @@ fun EventCard(
     userViewModel: UserViewModel,
     bitmapImage: Bitmap
 ) {
-  /*  var bitmapImage by remember {
-        mutableStateOf<Bitmap?>(null)
-    }*/
+    /*  var bitmapImage by remember {
+          mutableStateOf<Bitmap?>(null)
+      }*/
     val context = LocalContext.current
     val mutableList = mutableListOf<Bitmap>()
 
@@ -348,7 +353,7 @@ fun EventCard(
             .width(340.dp)
             .wrapContentHeight()
             .clickable { navController.navigate("details/$name/$date") },
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(16.dp),
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
     ) {
@@ -360,8 +365,9 @@ fun EventCard(
                 //painter = painterResource(id = R.drawable.event1),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(130.dp)
-                    .padding(8.dp),
+                    .size(120.dp)
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(10.dp)),
                 contentScale = ContentScale.Fit,
             )
             Column(Modifier.padding(8.dp)) {
@@ -378,12 +384,30 @@ fun EventCard(
                     text = date,
                     style = MaterialTheme.typography.body2,
                 )
-                Button(onClick = {
-                    userViewModel.deleteEvent(name)
-                }) {
-                    Text("Delete event")
-                }
             }
+
+            Spacer(modifier = Modifier.width(60.dp))
+            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.width(60.dp)) {
+                Spacer(modifier = Modifier.height(10.dp))
+
+                IconButton(
+                    onClick = {
+                        userViewModel.deleteEvent(name)
+                    },
+                    modifier = Modifier
+                        .defaultMinSize(minWidth = 40.dp, minHeight = 30.dp)
+                        .padding(start = 10.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Delete,
+                        contentDescription = "Delete",
+                        tint = delete
+                    )
+                }
+
+                Text(text = "See more", color = Gray, fontSize = 14.sp)
+            }
+
         }
     }
 }

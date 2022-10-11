@@ -1,5 +1,6 @@
 package com.example.eventmanager.screens
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +51,7 @@ fun EventDetails(
                         Icon(Icons.Filled.Settings, null)
                     }
                 })
+
             Image(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -55,6 +59,7 @@ fun EventDetails(
                 contentDescription = "Header Background",
                 contentScale = ContentScale.FillWidth
             )
+
             Column(
                 modifier = Modifier
                     .padding(12.dp),

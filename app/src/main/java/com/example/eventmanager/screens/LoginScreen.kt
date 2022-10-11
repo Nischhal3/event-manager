@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -35,11 +36,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.eventmanager.R
-import com.example.eventmanager.ui.theme.Background
-import com.example.eventmanager.ui.theme.MainText
-import com.example.eventmanager.ui.theme.Secondary
-import com.example.eventmanager.ui.theme.orange
+import com.example.eventmanager.ui.theme.*
 import com.example.eventmanager.viewmodel.UserViewModel
 
 @Composable
@@ -77,31 +76,27 @@ fun loginScreen(
                 Column(
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.offset(y = (-30).dp)
                 ) {
-                    Row() {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_fb),
-                            contentDescription = ""
-                        )
-                        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_google),
-                            contentDescription = ""
-                        )
-                        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_twitter),
-                            contentDescription = ""
-                        )
-
-                    }
                     Text(
-                        modifier = Modifier.clickable { navController.navigate("register") },
+                        modifier = Modifier
+                            .offset(y = (20).dp)
+                            .clickable { navController.navigate("register") },
                         text = signupText,
                         color = Color.White
                     )
-                    Spacer(modifier = Modifier.padding(bottom = 40.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "logo",
+                        modifier = Modifier
+                            .width(150.dp)
+                            .offset(y = (30).dp),
+                    )
+                    Text(
+                        modifier = Modifier.offset(y = (-30).dp),
+                        text = "All events you have in one place",
+                        fontSize = 14.sp,
+                        color = Main
+                    )
 
                 }
             }
@@ -162,39 +157,29 @@ fun loginScreen(
                     )
 
                     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(
-                            modifier = Modifier.clickable { navController.navigate("register") },
-                            text = "Forgot password?",
-                            textAlign = TextAlign.End,
-                            color = MainText
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.padding(vertical = 12.dp))
 
                     Button(
                         onClick = {
-                            //userList.value.map {
-                            //if (it.user_name == userName.value && it.password == password.value) {
-                            navController.navigate("main") {
-                                popUpTo("login") { inclusive = true }
+                            userList.value.map {
+                                if (it.user_name == userName.value && it.password == password.value) {
+                                    navController.navigate("main") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Invalid username or password",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
-                            // } else {
-                            //Toast.makeText(
-                            //    context,
-                            //   "Invalid username or password",
-                            // Toast.LENGTH_SHORT
-                            //  ).show()
-                            //}
-                            //}
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Secondary,
                             Color.White
                         ),
                         shape = MaterialTheme.shapes.medium,
-                        //enabled = isEnabled
+                        enabled = isEnabled
 
                     ) {
                         Text(text = "Log In")
