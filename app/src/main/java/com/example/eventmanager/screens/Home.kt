@@ -1,5 +1,7 @@
 package com.example.eventmanager.screens
 
+import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -62,7 +65,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.padding(top = 36.dp))
             //Text(text = "hello $value")
             Spacer(modifier = Modifier.padding(top = 36.dp))
-            Content(eventListByUser, navController,userViewModel)
+            Content(eventListByUser, navController, userViewModel)
         }
     }
 }
@@ -232,6 +235,10 @@ fun ListOfEvents(
     state: MutableState<TextFieldValue>,
     userViewModel: UserViewModel
 ) {
+    val imageList = userViewModel.getAllImage().observeAsState(listOf())
+    imageList.value.forEach {
+        Log.d("user", "home ${it.image}")
+    }
 
     Column(
         modifier = Modifier
@@ -249,6 +256,7 @@ fun ListOfEvents(
         }
 
         eventListByUser?.value?.let { it ->
+
             val searchedText = state.value.text
             if (searchedText.isEmpty()) {
                 LazyColumn(
@@ -257,19 +265,34 @@ fun ListOfEvents(
                         .padding(start = 15.dp, top = 15.dp)
                 ) {
                     items(it) { item ->
-                        EventCard(
-                            name = item.event_name,
-                            country = item.country,
-                            date = item.date,
-                            userViewModel = userViewModel,
-                            navController = navController
-                        )
+                        var bitmapImage: Bitmap? = null
+                        imageList.value.map { imageObj ->
+                            if (imageObj.e_name == item.event_name) {
+                                bitmapImage = imageObj.image
+                            }
+                        }
+                        bitmapImage?.let { it1 ->
+                            EventCard(
+                                name = item.event_name,
+                                country = item.city,
+                                date = item.date,
+                                navController = navController,
+                                userViewModel = userViewModel,
+                                bitmapImage = it1
+                            )
+                        }
                     }
                 }
 
             } else {
                 val resultList = ArrayList<Event>()
                 eventListByUser.value.forEach {
+                    var bitmapImage: Bitmap? = null
+                    imageList.value.map { imageObj ->
+                        if (imageObj.e_name == it.event_name) {
+                            bitmapImage = imageObj.image
+                        }
+                    }
                     if (it.event_name.lowercase(Locale.getDefault())
                             .contains(searchedText.lowercase(Locale.getDefault()))
                     ) {
@@ -278,13 +301,16 @@ fun ListOfEvents(
                             modifier = Modifier
                                 .padding(start = 15.dp)
                         ) {
-                            EventCard(
-                                name = it.event_name,
-                                country = it.country,
-                                date = it.date,
-                                navController = navController,
-                                userViewModel = userViewModel
-                            )
+                            bitmapImage?.let { bitmap ->
+                                EventCard(
+                                    name = it.event_name,
+                                    country = it.city,
+                                    date = it.date,
+                                    bitmapImage = bitmap,
+                                    navController = navController,
+                                    userViewModel = userViewModel
+                                )
+                            }
                         }
                     }
                 }
@@ -300,8 +326,22 @@ fun EventCard(
     country: String,
     date: String,
     navController: NavController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    bitmapImage: Bitmap
 ) {
+  /*  var bitmapImage by remember {
+        mutableStateOf<Bitmap?>(null)
+    }*/
+    val context = LocalContext.current
+    val mutableList = mutableListOf<Bitmap>()
+
+
+    /*  userViewModel.image.observe(context as MainActivity) {
+          Log.d("user", "home bitmap $it")
+          bitmapImage = it
+      }
+  */
+
     Card(
         modifier = Modifier
             .padding(10.dp)
@@ -316,7 +356,8 @@ fun EventCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.event1),
+                bitmap = bitmapImage.asImageBitmap(),
+                //painter = painterResource(id = R.drawable.event1),
                 contentDescription = null,
                 modifier = Modifier
                     .size(130.dp)

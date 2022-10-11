@@ -8,5 +8,4 @@ data class Event(
     val date: String,
     val name: String,
     val location: String,
-
 )

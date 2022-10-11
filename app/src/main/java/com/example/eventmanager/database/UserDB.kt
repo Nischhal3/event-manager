@@ -1,17 +1,18 @@
 package com.example.eventmanager.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import com.example.eventmanager.converter.Converter
 
 /**
  * Instance of the User and Event database
  */
-@Database(entities = [(User::class), (Event::class)], version = 3)
+@Database(entities = [(User::class), (Event::class), (EventImage::class)], version = 7)
+@TypeConverters(Converter::class)
 abstract class UserDB : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun eventDao(): EventDao
+    abstract fun ImageDao(): ImageDao
 
     companion object {
         private var sInstance: UserDB? = null

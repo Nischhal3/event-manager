@@ -1,6 +1,10 @@
 package com.example.eventmanager.screens
 
+import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
@@ -29,11 +36,16 @@ import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.ui.theme.Purple500
 import com.example.eventmanager.viewmodel.DateAndTimeViewModel
 import com.example.eventmanager.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
     // val eventList = userViewModel.getAllEvent().observeAsState(listOf())
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val dateAndTimeViewModel = DateAndTimeViewModel()
+    val keyboardController = LocalSoftwareKeyboardController.current
     var name by remember {
         mutableStateOf("")
     }
@@ -59,15 +71,30 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
     var date by remember {
         mutableStateOf("")
     }
+    var imageUri by remember {
+        mutableStateOf("")
+    }
+
     var isEnabled = true
 
     // Disabling button if any of these text fields are empty
-    if (name.isEmpty() || category.isEmpty() || city.isEmpty() || postalCode.isEmpty() || street.isEmpty() || country.isEmpty() || date.isEmpty() || time.isEmpty()) {
+    if (name.isEmpty() || category.isEmpty() || city.isEmpty() || street.isEmpty() || date.isEmpty() || time.isEmpty()) {
         isEnabled = false
     }
-    val context = LocalContext.current
-    val dateAndTimeViewModel = DateAndTimeViewModel()
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            imageUri = uri.toString()
+            coroutineScope.launch {
+                userViewModel.getBitmap(context, imageUri)
+            }
+        }
+
+  /*  userViewModel.light.observe(context as MainActivity) {
+        Log.d("user", "bitmap $it")
+    }*/
+    Log.d("user", "From event $imageUri")
+
+
     Box() {
         Image(
             modifier = Modifier
@@ -167,7 +194,7 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                 )
             )
             Spacer(modifier = Modifier.padding(5.dp))
-            TextField(
+/*            TextField(
                 value = postalCode,
                 onValueChange = { postalCode = it },
                 leadingIcon = {
@@ -183,9 +210,9 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.White
                 )
-            )
-            Spacer(modifier = Modifier.padding(5.dp))
-            TextField(
+            )*/
+            //Spacer(modifier = Modifier.padding(5.dp))
+/*            TextField(
                 value = country,
                 onValueChange = { country = it },
                 leadingIcon = {
@@ -202,51 +229,45 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.White
                 )
-            )
-            Spacer(modifier = Modifier.padding(5.dp))
-        Row{
-            TextField(
-                value = "",
-                onValueChange = { country = it },
-                label = { Text(text = "$date $time", color = MainText) },
-                placeholder = { Text(text = "Select a date and time") },
-                modifier = Modifier
-                    .padding(vertical = 3.dp)
-                    .width(270.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.White
-                )
-            )
-            Spacer(modifier = Modifier.padding(5.dp))
+            )*/
+            //Spacer(modifier = Modifier.padding(5.dp))
+            Row {
+                Button(onClick = {
+                    launcher.launch("image/*")
 
-            OutlinedButton(
-                onClick = {
-                    // View model method call in onClick event
-                    dateAndTimeViewModel.selectDateTime(context)
-                    dateAndTimeViewModel.time.observe(context as MainActivity) {
-                        time = it
-                    }
-                    dateAndTimeViewModel.date.observe(context) {
-                        date = it
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MainText,
-                    contentColor = Color.White
-                ),
-                modifier = Modifier
-                    .width(55.dp)
-                    .height(55.dp)
+                }) {
+                    Text("Pick Image")
+                }
+                Spacer(modifier = Modifier.padding(5.dp))
 
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "passwordIcon",
-                    modifier = Modifier.fillMaxSize(1.0f)
-                )
+                OutlinedButton(
+                    onClick = {
+                        // View model method call in onClick event
+                        dateAndTimeViewModel.selectDateTime(context)
+                        dateAndTimeViewModel.time.observe(context as MainActivity) {
+                            time = it
+                        }
+                        dateAndTimeViewModel.date.observe(context) {
+                            date = it
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MainText,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .width(55.dp)
+                        .height(55.dp)
 
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "passwordIcon",
+                        modifier = Modifier.fillMaxSize(1.0f)
+                    )
+
+                }
             }
-        }
             Spacer(modifier = Modifier.padding(5.dp))
 
             // TODO
@@ -277,12 +298,11 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                                 category,
                                 city,
                                 street,
-                                postalCode,
-                                country,
                                 date,
-                                time
-                            )
+                                time,
+                                )
                         )
+                        userViewModel.addImage(name)
                     }
                     name = ""
                     category = ""
@@ -303,10 +323,7 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
             )
             {
                 Text(text = "Add Event", color = Color.White)
-
             }
-
-
         }
     }
 }

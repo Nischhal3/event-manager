@@ -1,6 +1,7 @@
 package com.example.eventmanager
 
 import android.content.Context
+import android.database.CursorWindow
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -23,6 +24,8 @@ import com.example.eventmanager.screens.loginScreen
 import com.example.eventmanager.ui.theme.EventManagerTheme
 import com.example.eventmanager.viewmodel.LightSensorViewModel
 import com.example.eventmanager.viewmodel.UserViewModel
+import java.lang.reflect.Field
+
 
 class MainActivity : ComponentActivity(), SensorEventListener {
     companion object {
@@ -38,7 +41,13 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = UserViewModel(application)
-
+        try {
+            val field: Field = CursorWindow::class.java.getDeclaredField("sCursorWindowSize")
+            field.isAccessible = true
+            field.set(null, 100 * 1024 * 1024) //the 100MB is the new size
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         slight = sm.getDefaultSensor(Sensor.TYPE_LIGHT)
 
