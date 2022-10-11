@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -39,7 +38,6 @@ import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.delete
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Composable
 
@@ -48,13 +46,9 @@ fun HomeScreen(
     userViewModel: UserViewModel,
     navController: NavController,
 ) {
-    var value by remember {
-        mutableStateOf("...")
-    }
     // Fetching list of events by userId
     val eventListByUser =
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
-    val context = LocalContext.current
 
     Box {
 
@@ -66,7 +60,7 @@ fun HomeScreen(
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
-        Column() {
+        Column {
             Spacer(modifier = Modifier.padding(top = 36.dp))
             //Text(text = "hello $value")
             Spacer(modifier = Modifier.padding(top = 36.dp))
@@ -241,9 +235,6 @@ fun ListOfEvents(
     userViewModel: UserViewModel
 ) {
     val imageList = userViewModel.getAllImage().observeAsState(listOf())
-    imageList.value.forEach {
-        Log.d("user", "home ${it.image}")
-    }
 
     Column(
         modifier = Modifier
@@ -270,20 +261,23 @@ fun ListOfEvents(
                         .padding(start = 15.dp, top = 15.dp)
                 ) {
                     items(it) { item ->
+                        var imageId: Long? = null
                         var bitmapImage: Bitmap? = null
                         imageList.value.map { imageObj ->
                             if (imageObj.e_name == item.event_name) {
                                 bitmapImage = imageObj.image
+                                imageId = imageObj.image_id
                             }
                         }
-                        bitmapImage?.let { it1 ->
+                        bitmapImage?.let { bitmap ->
                             EventCard(
                                 name = item.event_name,
                                 country = item.city,
                                 date = item.date,
                                 navController = navController,
                                 userViewModel = userViewModel,
-                                bitmapImage = it1
+                                bitmapImage = bitmap,
+                                imageId = imageId
                             )
                         }
                     }
@@ -291,11 +285,14 @@ fun ListOfEvents(
 
             } else {
                 val resultList = ArrayList<Event>()
+
                 eventListByUser.value.forEach {
                     var bitmapImage: Bitmap? = null
+                    var imageId: Long? = null
                     imageList.value.map { imageObj ->
                         if (imageObj.e_name == it.event_name) {
                             bitmapImage = imageObj.image
+                            imageId = imageObj.image_id
                         }
                     }
                     if (it.event_name.lowercase(Locale.getDefault())
@@ -311,9 +308,10 @@ fun ListOfEvents(
                                     name = it.event_name,
                                     country = it.city,
                                     date = it.date,
-                                    bitmapImage = bitmap,
                                     navController = navController,
-                                    userViewModel = userViewModel
+                                    userViewModel = userViewModel,
+                                    bitmapImage = bitmap,
+                                    imageId = imageId
                                 )
                             }
                         }
@@ -332,28 +330,21 @@ fun EventCard(
     date: String,
     navController: NavController,
     userViewModel: UserViewModel,
-    bitmapImage: Bitmap
+    bitmapImage: Bitmap,
+    imageId: Long?
 ) {
-    /*  var bitmapImage by remember {
-          mutableStateOf<Bitmap?>(null)
-      }*/
-    val context = LocalContext.current
-    val mutableList = mutableListOf<Bitmap>()
 
+    // Converting Long imageId to String to pass it's value through navigation
+    val imageIdAsString = imageId.toString()
 
-    /*  userViewModel.image.observe(context as MainActivity) {
-          Log.d("user", "home bitmap $it")
-          bitmapImage = it
-      }
-  */
 
     Card(
         modifier = Modifier
             .padding(10.dp)
             .width(340.dp)
             .wrapContentHeight()
-            .clickable { navController.navigate("details/$name/$date") },
-        shape = RoundedCornerShape(16.dp),
+            .clickable { navController.navigate("details/$name/$date/$imageIdAsString") },
+        shape = MaterialTheme.shapes.medium,
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
     ) {

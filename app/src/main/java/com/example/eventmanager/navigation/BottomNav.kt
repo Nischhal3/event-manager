@@ -1,6 +1,7 @@
 package com.example.eventmanager.navigation
 
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -60,15 +61,18 @@ fun MainNavHost(
                 navController
             )
         }
-        composable("details" + "/{name}" + "/{date}") { navBackStack ->
+        composable("details" + "/{name}" + "/{date}" + "/{imageIdAsString}") { navBackStack ->
             val eventName = navBackStack.arguments?.getString("name")
             val date = navBackStack.arguments?.getString("date")
+            val imageIdAsString = navBackStack.arguments?.getString("imageIdAsString")
+            
             EventDetails(
                 navController = navController,
                 name = eventName,
                 date = date,
+                imageIdAsString = imageIdAsString,
+                userViewModel = userViewModel,
             )
         }
-
     }
 }

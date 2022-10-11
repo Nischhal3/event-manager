@@ -18,6 +18,9 @@ data class User(
     val password: String,
 )
 
+/**
+ * Model of Event data base
+ */
 @Entity(
     foreignKeys = [ForeignKey(
         entity = User::class,
@@ -38,6 +41,9 @@ data class Event(
     val time: String,
 )
 
+/**
+ * Model of Image data base
+ */
 @Entity(
     foreignKeys = [ForeignKey(
         entity = Event::class,
@@ -53,6 +59,11 @@ data class EventImage(
     val image: Bitmap
 )
 
+/**
+ * One to one relation between User and Event
+ * User is parent table and Event is child table
+ * Whenever user is removed from db, event related to that user is also removed from db
+ */
 class UserAndEvent(
     @Embedded
     val user: User? = null,
@@ -63,6 +74,11 @@ class UserAndEvent(
     val event: List<Event>? = null
 )
 
+/**
+ * One to one relation between Event And Image
+ * Event is parent table and Image is child table
+ * Whenever Event is removed from db, Image related to that user is also removed from db
+ */
 class EventAndImage(
     @Embedded
     val event: Event? = null,

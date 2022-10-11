@@ -1,39 +1,32 @@
 package com.example.eventmanager.screens
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.MainText
-import com.example.eventmanager.ui.theme.Purple500
 import com.example.eventmanager.viewmodel.DateAndTimeViewModel
 import com.example.eventmanager.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -55,14 +48,11 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
     var city by remember {
         mutableStateOf("")
     }
-    var postalCode by remember {
-        mutableStateOf("")
-    }
 
     var street by remember {
         mutableStateOf("")
     }
-    var country by remember {
+    var description by remember {
         mutableStateOf("")
     }
     var time by remember {
@@ -81,6 +71,8 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
     if (name.isEmpty() || category.isEmpty() || city.isEmpty() || street.isEmpty() || date.isEmpty() || time.isEmpty()) {
         isEnabled = false
     }
+
+    // Passing imageUri to userViewModel for bitmap conversion
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             imageUri = uri.toString()
@@ -89,13 +81,7 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
             }
         }
 
-  /*  userViewModel.light.observe(context as MainActivity) {
-        Log.d("user", "bitmap $it")
-    }*/
-    Log.d("user", "From event $imageUri")
-
-
-    Box() {
+    Box {
         Image(
             modifier = Modifier
                 .offset(0.dp, (-30).dp),
@@ -103,7 +89,6 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
             contentDescription = "Header Background",
             contentScale = ContentScale.FillHeight
         )
-
 
         Column(
             modifier = Modifier
@@ -194,43 +179,25 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                 )
             )
             Spacer(modifier = Modifier.padding(5.dp))
-/*            TextField(
-                value = postalCode,
-                onValueChange = { postalCode = it },
+            TextField(
+                value = description,
+                onValueChange = { description = it },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.LocationCity,
+                        imageVector = Icons.Default.Streetview,
                         contentDescription = ""
                     )
                 },
-                label = { Text(text = "Postal Code", color = MainText) },
+                label = { Text(text = "Description", color = MainText) },
                 modifier = Modifier
                     .padding(vertical = 3.dp)
                     .width(340.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.White
                 )
-            )*/
-            //Spacer(modifier = Modifier.padding(5.dp))
-/*            TextField(
-                value = country,
-                onValueChange = { country = it },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Map,
-                        contentDescription = ""
-                    )
-                },
-                label = { Text(text = "Country", color = MainText) },
-                placeholder = { Text(text = "Country") },
-                modifier = Modifier
-                    .padding(vertical = 3.dp)
-                    .width(340.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.White
-                )
-            )*/
-            //Spacer(modifier = Modifier.padding(5.dp))
+            )
+            Spacer(modifier = Modifier.padding(5.dp))
+
             Row {
                 Button(onClick = {
                     launcher.launch("image/*")
@@ -270,24 +237,6 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
             }
             Spacer(modifier = Modifier.padding(5.dp))
 
-            // TODO
-/*        Button(onClick = {
-            locationViewModel.city.observe(context as MainActivity) {
-                city = it
-            }
-            locationViewModel.postalCode.observe(context) {
-                postalCode = it
-            }
-            locationViewModel.street.observe(context) {
-                street = it
-            }
-            locationViewModel.countryName.observe(context) {
-                country = it
-            }
-        }) {
-            Text("Use current Location")
-        }*/
-
             Button(
                 onClick = {
                     if (userId != null) {
@@ -308,8 +257,7 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                     category = ""
                     city = ""
                     street = ""
-                    postalCode = ""
-                    country = ""
+                    description = ""
                     date = ""
                     time = ""
                 },

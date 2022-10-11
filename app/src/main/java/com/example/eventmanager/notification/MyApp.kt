@@ -6,6 +6,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 
+
+/**
+ * Implementing light sensor
+ */
 class MyApp: Application() {
 
     override fun onCreate() {
@@ -13,6 +17,7 @@ class MyApp: Application() {
         createNotificationChannel()
     }
 
+    // Creating notification channel
     private fun createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channel = NotificationChannel(

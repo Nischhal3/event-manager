@@ -1,5 +1,6 @@
 package com.example.eventmanager
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.CursorWindow
 import android.hardware.Sensor
@@ -41,13 +42,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = UserViewModel(application)
-        try {
-            val field: Field = CursorWindow::class.java.getDeclaredField("sCursorWindowSize")
-            field.isAccessible = true
-            field.set(null, 100 * 1024 * 1024) //the 100MB is the new size
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        fixSqlError()
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         slight = sm.getDefaultSensor(Sensor.TYPE_LIGHT)
 
@@ -91,7 +86,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, p1: Int) {
-        Log.d("Hello", "onAccuracyChange: ${sensor?.name}: $p1")
+        Log.d("LightValue", "onAccuracyChange: ${sensor?.name}: $p1")
     }
 
     override fun onResume() {
@@ -108,6 +103,22 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
 }
 
+/***
+ * Error message:
+ * android.database.sqlite.SQLiteBlobTooBigException:
+ * Row too big to fit into CursorWindow requiredPos=0, totalRows=1
+ * Finally solved this issue with this piece of code
+ */
+@SuppressLint("DiscouragedPrivateApi")
+private fun fixSqlError() {
+    try {
+        val field: Field = CursorWindow::class.java.getDeclaredField("sCursorWindowSize")
+        field.isAccessible = true
+        field.set(null, 100 * 1024 * 1024) //the 100MB is the new size
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 
 /**
  * Displays notification
@@ -140,8 +151,8 @@ fun ShowNotification(mTemperatureViewModel: LightSensorViewModel, context: Conte
 private fun brightness(brightness: Float): String {
     return when (brightness.toInt()) {
         0 -> "pitch black"
-        in 1..600 -> "dark"
-        in 601..5000 -> "normal"
+        in 1..50 -> "dark"
+        in 51..5000 -> "normal"
         in 5001..25000 -> "Light"
         else -> "very bright"
     }

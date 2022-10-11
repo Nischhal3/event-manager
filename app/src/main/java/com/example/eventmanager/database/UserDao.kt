@@ -38,10 +38,4 @@ interface UserDao {
      */
     @Query("DELETE FROM user WHERE user.user_name = :userName")
     suspend  fun deleteUser(userName: String)
-
-    /**
-     * Deletes all user in database
-     */
-    @Query("DELETE FROM user")
-    suspend  fun deleteAll()
 }
