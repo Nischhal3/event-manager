@@ -1,7 +1,6 @@
 package com.example.eventmanager.screens
 
 import android.util.Log
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,23 +19,18 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import com.example.eventmanager.R
 import com.example.eventmanager.database.User
-import com.example.eventmanager.ui.theme.*
+import com.example.eventmanager.ui.theme.Background
+import com.example.eventmanager.ui.theme.MainText
+import com.example.eventmanager.ui.theme.Secondary
 import com.example.eventmanager.viewmodel.UserViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Register(navController: NavController, userViewModel: UserViewModel) {
     //userViewModel.deleteUsers()
@@ -45,7 +42,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
     var isEnabled = true
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     if (firstName.value.isEmpty() || lastName.value.isEmpty() || userName.value.isEmpty()
         || confirmPassword.value.isEmpty() || password.value.isEmpty()) {
@@ -53,12 +49,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        val loginText = buildAnnotatedString {
-            append("Already have an account? ")
-            withStyle(SpanStyle(color = MainText, textDecoration = TextDecoration.Underline)) {
-                append("Log In")
-            }
-        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,10 +72,7 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                 .fillMaxHeight(0.70f)
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                 .background(Color.White)
-                .padding(10.dp)
-                .clickable {keyboardController?.hide()}
-                .verticalScroll(rememberScrollState()),
-
+                .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -93,7 +80,7 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
             Text(
                 text = "Sign Up", fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.padding(10.dp))
+            Spacer(modifier = Modifier.padding(20.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 TextField(
                     value = firstName.value,
@@ -210,7 +197,7 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
-                    text = loginText,
+                    text = "Login Instead",
                     modifier = Modifier.clickable(
                         onClick = {
                             navController.navigate("login") {

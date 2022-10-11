@@ -4,7 +4,6 @@
     package="com.example.eventmanager">
 
     <application
-        android:name=".notification.MyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

@@ -131,7 +131,6 @@ fun loginScreen(
                     TextField(
                         value = userName.value,
                         onValueChange = { userName.value = it },
-                        singleLine = true,
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
@@ -147,7 +146,6 @@ fun loginScreen(
                     TextField(
                         value = password.value,
                         onValueChange = { password.value = it },
-                        singleLine = true,
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -175,26 +173,26 @@ fun loginScreen(
 
                     Button(
                         onClick = {
-                            //userList.value.map {
-                            //if (it.user_name == userName.value && it.password == password.value) {
-                            navController.navigate("main") {
-                                popUpTo("login") { inclusive = true }
-                            }
-                            // } else {
-                            //Toast.makeText(
-                            //    context,
-                            //   "Invalid username or password",
-                            // Toast.LENGTH_SHORT
-                            //  ).show()
-                            //}
-                            //}
+                            // userList.value.map {
+                            //   if (it.user_name == userName.value && it.password == password.value) {
+                                    navController.navigate("main") {
+                                        popUpTo("login") { inclusive = true }
+                                           }
+                                        //   } else {
+                                        //       Toast.makeText(
+                                        //          context,
+                                        //            "Invalid username or password",
+                                        //           Toast.LENGTH_SHORT
+                                        //       ).show()
+                                        //    }
+                                        //  }
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Secondary,
                             Color.White
                         ),
                         shape = MaterialTheme.shapes.medium,
-                        //enabled = isEnabled
+                        // enabled = isEnabled
 
                     ) {
                         Text(text = "Log In")
@@ -203,5 +201,5 @@ fun loginScreen(
             }
         }
     }
-    return userName
+    return  userName
 }
