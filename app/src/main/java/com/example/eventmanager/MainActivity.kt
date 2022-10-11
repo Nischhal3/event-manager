@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = UserViewModel(application)
-        toFixSqlError()
+        fixSqlError()
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         slight = sm.getDefaultSensor(Sensor.TYPE_LIGHT)
 
@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
  * Finally solved this issue with this piece of code
  */
 @SuppressLint("DiscouragedPrivateApi")
-private fun toFixSqlError() {
+private fun fixSqlError() {
     try {
         val field: Field = CursorWindow::class.java.getDeclaredField("sCursorWindowSize")
         field.isAccessible = true
@@ -151,8 +151,8 @@ fun ShowNotification(mTemperatureViewModel: LightSensorViewModel, context: Conte
 private fun brightness(brightness: Float): String {
     return when (brightness.toInt()) {
         0 -> "pitch black"
-        in 1..600 -> "dark"
-        in 601..5000 -> "normal"
+        in 1..50 -> "dark"
+        in 51..5000 -> "normal"
         in 5001..25000 -> "Light"
         else -> "very bright"
     }

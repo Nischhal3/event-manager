@@ -1,6 +1,7 @@
 package com.example.eventmanager.screens
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -255,20 +256,23 @@ fun ListOfEvents(
                         .padding(start = 15.dp, top = 15.dp)
                 ) {
                     items(it) { item ->
+                        var imageId: Long? = null
                         var bitmapImage: Bitmap? = null
                         imageList.value.map { imageObj ->
                             if (imageObj.e_name == item.event_name) {
                                 bitmapImage = imageObj.image
+                                imageId = imageObj.image_id
                             }
                         }
-                        bitmapImage?.let { it1 ->
+                        bitmapImage?.let { bitmap ->
                             EventCard(
                                 name = item.event_name,
                                 country = item.city,
                                 date = item.date,
                                 navController = navController,
                                 userViewModel = userViewModel,
-                                bitmapImage = it1
+                                bitmapImage = bitmap,
+                                imageId = imageId
                             )
                         }
                     }
@@ -276,11 +280,14 @@ fun ListOfEvents(
 
             } else {
                 val resultList = ArrayList<Event>()
+
                 eventListByUser.value.forEach {
                     var bitmapImage: Bitmap? = null
+                    var imageId: Long? = null
                     imageList.value.map { imageObj ->
                         if (imageObj.e_name == it.event_name) {
                             bitmapImage = imageObj.image
+                            imageId = imageObj.image_id
                         }
                     }
                     if (it.event_name.lowercase(Locale.getDefault())
@@ -296,9 +303,10 @@ fun ListOfEvents(
                                     name = it.event_name,
                                     country = it.city,
                                     date = it.date,
-                                    bitmapImage = bitmap,
                                     navController = navController,
-                                    userViewModel = userViewModel
+                                    userViewModel = userViewModel,
+                                    bitmapImage = bitmap,
+                                    imageId = imageId
                                 )
                             }
                         }
@@ -317,14 +325,18 @@ fun EventCard(
     date: String,
     navController: NavController,
     userViewModel: UserViewModel,
-    bitmapImage: Bitmap
+    bitmapImage: Bitmap,
+    imageId: Long?
 ) {
+    // Converting Long imageId to String to pass it's value through navigation
+    val imageIdAsString = imageId.toString()
+
     Card(
         modifier = Modifier
             .padding(10.dp)
             .width(340.dp)
             .wrapContentHeight()
-            .clickable { navController.navigate("details/$name/$date") },
+            .clickable { navController.navigate("details/$name/$date/$imageIdAsString") },
         shape = MaterialTheme.shapes.medium,
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface

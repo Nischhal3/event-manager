@@ -1,34 +1,53 @@
 package com.example.eventmanager.screens
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.eventmanager.viewmodel.UserViewModel
 
+
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun EventDetails(
     navController: NavController,
     name: String?,
     date: String?,
+    imageIdAsString: String?,
+    userViewModel: UserViewModel,
 ) {
+    val imageList = userViewModel.getAllImage().observeAsState(listOf())
+    var bitmapImage by remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+    // Converting string imageId to Long imageId
+    val imageIdToLong = imageIdAsString?.toLong()
+
+    // Fetching right bitmap image value through image id
+    imageList.value.map {
+        if (imageIdToLong == it.image_id) {
+            bitmapImage = it.image
+        }
+    }
+
     Box {
-
-
         Column {
             TopAppBar(
                 elevation = 4.dp,
@@ -48,13 +67,15 @@ fun EventDetails(
                         Icon(Icons.Filled.Settings, null)
                     }
                 })
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                painter = painterResource(id = com.example.eventmanager.R.drawable.home_bg),
-                contentDescription = "Header Background",
-                contentScale = ContentScale.FillWidth
-            )
+            bitmapImage?.let {
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = "Header Background",
+                    contentScale = ContentScale.FillWidth
+                )
+            }
             Column(
                 modifier = Modifier
                     .padding(12.dp),
