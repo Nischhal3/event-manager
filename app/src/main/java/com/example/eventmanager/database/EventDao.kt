@@ -1,5 +1,6 @@
 package com.example.eventmanager.database
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -16,6 +17,13 @@ interface EventDao {
     fun getAllEvent(): LiveData<List<Event>>
 
     /**
+     * @param userId
+     * @return list of event by userId
+     */
+    @Query("SELECT * FROM Event  WHERE uid = :userId ")
+    fun getAllEventByUserId(userId: Long): LiveData<List<Event>>
+
+    /**
      * @param event
      * Adds event to the database
      */
@@ -24,7 +32,7 @@ interface EventDao {
 
     /**
      * @param event
-     * Updates event in the detabase
+     * Updates event in the database
      */
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateEvent(event: Event)
@@ -34,5 +42,15 @@ interface EventDao {
      * Deletes event from the database
      */
     @Query("DELETE FROM event WHERE event.event_name= :eventName")
-    suspend  fun deleteUse(eventName: String)
+    suspend  fun deleteEvent(eventName: String)
+
+}
+
+@Dao
+interface ImageDao{
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addImage(eventImage: EventImage): Long
+
+    @Query("SELECT * FROM EventImage")
+    fun getImageByEventName(): LiveData<List<EventImage>>
 }

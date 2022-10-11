@@ -1,33 +1,58 @@
-package com.example.eventmanager
+package com.example.eventmanager.screens
 
+import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.eventmanager.R
+import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
+import com.example.eventmanager.viewmodel.UserViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Composable
-fun HomeScreen() {
-    Box(Modifier.verticalScroll(rememberScrollState())) {
+
+fun HomeScreen(
+    userId: Long?,
+    userViewModel: UserViewModel,
+    navController: NavController,
+) {
+    var value by remember {
+        mutableStateOf("...")
+    }
+    // Fetching list of events by userId
+    val eventListByUser =
+        userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
+    val context = LocalContext.current
+
+    Box {
+
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,26 +61,33 @@ fun HomeScreen() {
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
-        Column {
+        Column() {
             Spacer(modifier = Modifier.padding(top = 36.dp))
-            Content()
+            //Text(text = "hello $value")
+            Spacer(modifier = Modifier.padding(top = 36.dp))
+            Content(eventListByUser, navController, userViewModel)
         }
     }
 }
 
 @Composable
-fun AppBar() {
+fun AppBar(state: MutableState<TextFieldValue>) {
     Row(
         Modifier
             .padding(16.dp)
-            .height(48.dp),
+            .height(55.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         TextField(
-            value = "",
-            onValueChange = {},
-            label = { Text(text = "Search Events, Places, etc.", fontSize = 12.sp) },
+            value = state.value,
+            onValueChange = { value -> state.value = value },
+            label = {
+                Text(
+                    text = "Search Events, Places, etc.",
+                    fontSize = 12.sp,
+                )
+            },
             singleLine = true,
             leadingIcon = {
                 Icon(
@@ -81,7 +113,9 @@ fun AppBar() {
                 tint = Color.White
             )
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+
+        }) {
             Icon(
                 imageVector = Icons.Outlined.Notifications,
                 contentDescription = "",
@@ -91,15 +125,31 @@ fun AppBar() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Content() {
-    Column {
-        AppBar()
-        Spacer(modifier = Modifier.height(56.dp))
-        CategorySection()
+
+fun Content(
+    eventListByUser: State<List<Event>>?,
+    navController: NavController,
+    userViewModel: UserViewModel,
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
+
+    Column(modifier = Modifier.clickable { keyboardController?.hide() }) {
+
+        AppBar(textState)
+        Spacer(modifier = Modifier.height(16.dp))
+        // CategorySection()
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        EventSection()
+        ListOfEvents(
+            eventListByUser = eventListByUser,
+            userViewModel = userViewModel,
+            navController = navController,
+            state = textState
+        )
     }
 }
 
@@ -117,9 +167,6 @@ fun CategorySection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Category", style = MaterialTheme.typography.h6)
-            TextButton(onClick = {}) {
-                Text(text = "More", color = MaterialTheme.colors.primary)
-            }
         }
 
         Row(
@@ -182,8 +229,22 @@ fun CategoryButton(
 }
 
 @Composable
-fun EventSection() {
-    Column() {
+fun ListOfEvents(
+    eventListByUser: State<List<Event>>?,
+    navController: NavController,
+    state: MutableState<TextFieldValue>,
+    userViewModel: UserViewModel
+) {
+    val imageList = userViewModel.getAllImage().observeAsState(listOf())
+    imageList.value.forEach {
+        Log.d("user", "home ${it.image}")
+    }
+
+    Column(
+        modifier = Modifier
+            .padding(bottom = 50.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -192,105 +253,136 @@ fun EventSection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Upcoming Events", style = MaterialTheme.typography.h6)
-            TextButton(onClick = {}) {
-                Text(text = "More", color = MaterialTheme.colors.primary)
-            }
         }
 
-        EventItems()
-    }
-}
+        eventListByUser?.value?.let { it ->
 
-@Composable
-fun EventItems() {
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event1),
-                title = "Group Dinner",
-                location = "Long address, postal code, Helsinki",
-                participants = 10
-            )
-        }
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event2),
-                title = "Music concert",
-                location = "Espoo",
-                participants = 200
-            )
-        }
-        item {
-            EventItem(
-                imagePainter = painterResource(id = R.drawable.event3),
-                title = "Conference",
-                location = "Vantaa",
-                participants = 20
-            )
-        }
-    }
-}
-
-@Composable
-fun EventItem(
-    title: String = "",
-    location: String = "",
-    participants: Int = 0,
-    imagePainter: Painter
-) {
-    Card(
-        elevation = 4.dp,
-        shape = RoundedCornerShape(18.dp),
-        modifier = Modifier
-            .width(200.dp)
-            .height(300.dp)
-
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-
-
-        ) {
-            Image(
-                painter = imagePainter,
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.FillHeight
-            )
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, start = 8.dp, end = 8.dp)
-            ) {
-                Text(text = title, fontWeight = FontWeight.Bold)
-
-                Text(text = "$participants", color = MaterialTheme.colors.primary)
-
-                Row() {
-                    Icon(
-                        Icons.Default.Place,
-                        "contentDescription",
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(top = 5.dp),
-                        tint = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Text(
-                        text = location,
-                        color = Color.Gray
-                    )
+            val searchedText = state.value.text
+            if (searchedText.isEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .height(550.dp)
+                        .padding(start = 15.dp, top = 15.dp)
+                ) {
+                    items(it) { item ->
+                        var bitmapImage: Bitmap? = null
+                        imageList.value.map { imageObj ->
+                            if (imageObj.e_name == item.event_name) {
+                                bitmapImage = imageObj.image
+                            }
+                        }
+                        bitmapImage?.let { it1 ->
+                            EventCard(
+                                name = item.event_name,
+                                country = item.city,
+                                date = item.date,
+                                navController = navController,
+                                userViewModel = userViewModel,
+                                bitmapImage = it1
+                            )
+                        }
+                    }
                 }
 
+            } else {
+                val resultList = ArrayList<Event>()
+                eventListByUser.value.forEach {
+                    var bitmapImage: Bitmap? = null
+                    imageList.value.map { imageObj ->
+                        if (imageObj.e_name == it.event_name) {
+                            bitmapImage = imageObj.image
+                        }
+                    }
+                    if (it.event_name.lowercase(Locale.getDefault())
+                            .contains(searchedText.lowercase(Locale.getDefault()))
+                    ) {
+                        resultList.add(it)
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 15.dp)
+                        ) {
+                            bitmapImage?.let { bitmap ->
+                                EventCard(
+                                    name = it.event_name,
+                                    country = it.city,
+                                    date = it.date,
+                                    bitmapImage = bitmap,
+                                    navController = navController,
+                                    userViewModel = userViewModel
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
+
+@Composable
+fun EventCard(
+    name: String,
+    country: String,
+    date: String,
+    navController: NavController,
+    userViewModel: UserViewModel,
+    bitmapImage: Bitmap
+) {
+  /*  var bitmapImage by remember {
+        mutableStateOf<Bitmap?>(null)
+    }*/
+    val context = LocalContext.current
+    val mutableList = mutableListOf<Bitmap>()
+
+
+    /*  userViewModel.image.observe(context as MainActivity) {
+          Log.d("user", "home bitmap $it")
+          bitmapImage = it
+      }
+  */
+
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(340.dp)
+            .wrapContentHeight()
+            .clickable { navController.navigate("details/$name/$date") },
+        shape = MaterialTheme.shapes.medium,
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colors.surface
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                bitmap = bitmapImage.asImageBitmap(),
+                //painter = painterResource(id = R.drawable.event1),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(130.dp)
+                    .padding(8.dp),
+                contentScale = ContentScale.Fit,
+            )
+            Column(Modifier.padding(8.dp)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h5,
+                    color = MaterialTheme.colors.onSurface,
+                )
+                Text(
+                    text = country,
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    text = date,
+                    style = MaterialTheme.typography.body2,
+                )
+                Button(onClick = {
+                    userViewModel.deleteEvent(name)
+                }) {
+                    Text("Delete event")
+                }
             }
         }
     }
