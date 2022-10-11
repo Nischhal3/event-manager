@@ -6,12 +6,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
@@ -36,10 +33,7 @@ import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.navigation.AuthNavigationScreens
 import com.example.eventmanager.navigation.BottomNavigationScreens
-import com.example.eventmanager.ui.theme.Gray
-import com.example.eventmanager.ui.theme.Main
-import com.example.eventmanager.ui.theme.MainText
-import com.example.eventmanager.ui.theme.purplish
+import com.example.eventmanager.ui.theme.*
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.time.format.TextStyle
 
@@ -66,9 +60,7 @@ fun Account(
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
         notification.value = ""
     }
-    var name by rememberSaveable { mutableStateOf("") }
-    var username by rememberSaveable { mutableStateOf("default username") }
-    var bio by rememberSaveable { mutableStateOf("Something about me") }
+
 
     Column(
         modifier = Modifier
@@ -93,6 +85,7 @@ fun Account(
         }
 
         ProfileImage()
+        Spacer(modifier = Modifier.height(50.dp))
 
         Row(
             modifier = Modifier
@@ -101,16 +94,10 @@ fun Account(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Name", modifier = Modifier.width(100.dp))
-            TextField(
-                value = "${user.value?.first_name}",
-                onValueChange = { name = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                )
-            )
-        }
+            Text(text = "${user.value?.first_name}", modifier = Modifier.padding(start = 15.dp))
 
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,37 +105,7 @@ fun Account(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Username", modifier = Modifier.width(100.dp))
-            TextField(
-                value = userNameAsString,
-                onValueChange = { username = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                )
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Text(
-                text = "Bio", modifier = Modifier
-                    .width(100.dp)
-                    .padding(top = 8.dp)
-            )
-            TextField(
-                value = bio,
-                onValueChange = { bio = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                ),
-                singleLine = false,
-                modifier = Modifier.height(150.dp)
-            )
+            Text(text = userNameAsString, modifier = Modifier.padding(start = 15.dp))
 
         }
 
@@ -166,12 +123,14 @@ fun Account(
         }) {
             Text("Log out")
         }
-        Button(onClick = {
-            userViewModel.deleteUser(userNameAsString)
-            isLoggedOut.value = true
-            Log.d("user", "Clicked $isLoggedOut")
-        }) {
-            Text("Delete Account")
+        OutlinedButton(
+            border = BorderStroke(1.dp, red),
+            onClick = {
+                userViewModel.deleteUser(userNameAsString)
+                isLoggedOut.value = true
+                Log.d("user", "Clicked $isLoggedOut")
+            }) {
+            Text("Delete Account", color = red)
         }
     }
     if (isLoggedOut.value) {

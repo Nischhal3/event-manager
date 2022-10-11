@@ -37,7 +37,7 @@ fun MainNavHost(
     var userId: Long? = null
     val userList = userViewModel.getAllUser().observeAsState(listOf())
     userList.value.forEach {
-        if(it.user_name == userName.value){
+        if (it.user_name == userName.value) {
             userId = it.user_id
         }
     }
@@ -45,14 +45,29 @@ fun MainNavHost(
         navController = navController,
         startDestination = BottomNavigationScreens.Home.route
     ) {
-        composable(BottomNavigationScreens.Home.route) { HomeScreen(userId, userViewModel, navController) }
-        composable(BottomNavigationScreens.Events.route) { AddEvent(userId,userViewModel) }
-        composable(BottomNavigationScreens.Account.route) { Account(userName, userViewModel, navController) }
-        composable("details" + "/{name}" + "/{date}") {navBackStack ->
+        composable(BottomNavigationScreens.Home.route) {
+            HomeScreen(
+                userId,
+                userViewModel,
+                navController
+            )
+        }
+        composable(BottomNavigationScreens.Events.route) { AddEvent(userId, userViewModel) }
+        composable(BottomNavigationScreens.Account.route) {
+            Account(
+                userName,
+                userViewModel,
+                navController
+            )
+        }
+        composable("details" + "/{name}" + "/{date}") { navBackStack ->
             val eventName = navBackStack.arguments?.getString("name")
             val date = navBackStack.arguments?.getString("date")
-
-            EventDetails(navController = navController, name = eventName, date = date)
+            EventDetails(
+                navController = navController,
+                name = eventName,
+                date = date,
+            )
         }
 
     }
