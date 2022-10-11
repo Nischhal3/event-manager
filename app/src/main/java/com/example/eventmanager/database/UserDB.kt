@@ -5,7 +5,7 @@ import androidx.room.*
 import com.example.eventmanager.converter.Converter
 
 /**
- * Instance of the User and Event database
+ * Instance of the database
  */
 @Database(entities = [(User::class), (Event::class), (EventImage::class)], version = 7)
 @TypeConverters(Converter::class)

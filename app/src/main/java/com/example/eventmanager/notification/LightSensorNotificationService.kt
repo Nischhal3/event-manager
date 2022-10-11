@@ -9,6 +9,9 @@ import androidx.core.app.NotificationCompat
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 
+/**
+ * Notification service for light sensor
+ */
 class LightSensorNotificationService(
     private  val context: Context
 ) {

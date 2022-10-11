@@ -1,7 +1,6 @@
 package com.example.eventmanager.screens
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -34,7 +32,6 @@ import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Composable
 
@@ -43,13 +40,9 @@ fun HomeScreen(
     userViewModel: UserViewModel,
     navController: NavController,
 ) {
-    var value by remember {
-        mutableStateOf("...")
-    }
     // Fetching list of events by userId
     val eventListByUser =
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
-    val context = LocalContext.current
 
     Box {
 
@@ -61,7 +54,7 @@ fun HomeScreen(
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
-        Column() {
+        Column {
             Spacer(modifier = Modifier.padding(top = 36.dp))
             //Text(text = "hello $value")
             Spacer(modifier = Modifier.padding(top = 36.dp))
@@ -236,9 +229,6 @@ fun ListOfEvents(
     userViewModel: UserViewModel
 ) {
     val imageList = userViewModel.getAllImage().observeAsState(listOf())
-    imageList.value.forEach {
-        Log.d("user", "home ${it.image}")
-    }
 
     Column(
         modifier = Modifier
@@ -329,19 +319,6 @@ fun EventCard(
     userViewModel: UserViewModel,
     bitmapImage: Bitmap
 ) {
-  /*  var bitmapImage by remember {
-        mutableStateOf<Bitmap?>(null)
-    }*/
-    val context = LocalContext.current
-    val mutableList = mutableListOf<Bitmap>()
-
-
-    /*  userViewModel.image.observe(context as MainActivity) {
-          Log.d("user", "home bitmap $it")
-          bitmapImage = it
-      }
-  */
-
     Card(
         modifier = Modifier
             .padding(10.dp)

@@ -1,6 +1,5 @@
 package com.example.eventmanager.database
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -9,13 +8,6 @@ import androidx.room.*
  */
 @Dao
 interface EventDao {
-
-    /**
-     * @return list of event
-     */
-    @Query("SELECT * FROM Event")
-    fun getAllEvent(): LiveData<List<Event>>
-
     /**
      * @param userId
      * @return list of event by userId
@@ -48,9 +40,16 @@ interface EventDao {
 
 @Dao
 interface ImageDao{
+    /**
+     * @param eventImage
+     * Adding event image to database
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addImage(eventImage: EventImage): Long
 
+    /**
+     * Fetching  all events from event image database
+     */
     @Query("SELECT * FROM EventImage")
     fun getImageByEventName(): LiveData<List<EventImage>>
 }

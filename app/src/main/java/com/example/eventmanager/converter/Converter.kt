@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
 
+// Type converter to convert images for Room db
 class Converter {
     @TypeConverter
     fun fromBitmap(bitmap: Bitmap): ByteArray {

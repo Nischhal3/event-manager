@@ -28,11 +28,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _image: MutableLiveData<Bitmap> = MutableLiveData()
     val image: LiveData<Bitmap> = _image
 
-    private val _imageFromDb: MutableLiveData<Bitmap> = MutableLiveData()
-    val imageFromDb: LiveData<Bitmap> = _imageFromDb
-    // private val _username: MutableLiveData<String> = MutableLiveData()
-    // val userName:  LiveData<String> = _username
-
     /**
      * @return List of User
      */
@@ -53,13 +48,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun addUser(user: User) {
         viewModelScope.launch {
-            /*getAllUser().value?.forEach {
-                if (it.user_name != user.user_name) {
-                    userDB.userDao().addUser(user)
-                } else {
-                    Log.d("user", "User Exists")
-                }
-            }*/
             userDB.userDao().addUser(user)
         }
     }
@@ -69,21 +57,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             userDB.userDao().deleteUser(userName)
         }
     }
-
-    /**
-     * Deletes all user in database
-     */
-    fun deleteAllUsers() {
-        viewModelScope.launch {
-            userDB.userDao().deleteAll()
-        }
-    }
-
-    /**
-     * @return List of Events
-     */
-    fun getAllEvent(): LiveData<List<Event>> =
-        userDB.eventDao().getAllEvent()
 
     /**
      * @return List of Events
@@ -111,7 +84,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Converting URL image to bitmap
+    /**
+     * @param context
+     * @param imageUri
+     * Converting image url to bitmap value
+     */
     suspend fun getBitmap(context: Context, imageUri: String) {
         val loading = ImageLoader(context)
         val request = ImageRequest.Builder(context)
@@ -121,17 +98,21 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         _image.value = (result as BitmapDrawable).bitmap
     }
 
+    /**
+     * @param eventName
+     * Adding image to image database with event name as identifier
+     */
     fun addImage(eventName: String) {
-
         viewModelScope.launch {
             if(image.value != null){
                 userDB.ImageDao().addImage(EventImage(0,eventName, image.value!!))
             }
-/*            .value?.let { EventImage(0, eventName, it) }
-                ?.let { userDB.ImageDao().addImage(it)}*/
         }
     }
 
+    /**
+     * @return LiveData List of images
+     */
     fun getAllImage(): LiveData<List<EventImage>> =
         userDB.ImageDao().getImageByEventName()
 }
