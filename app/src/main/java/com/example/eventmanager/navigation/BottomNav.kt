@@ -65,7 +65,7 @@ fun MainNavHost(
             val eventName = navBackStack.arguments?.getString("name")
             val date = navBackStack.arguments?.getString("date")
             val imageIdAsString = navBackStack.arguments?.getString("imageIdAsString")
-
+            
             EventDetails(
                 navController = navController,
                 name = eventName,

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -67,6 +68,7 @@ fun EventDetails(
                         Icon(Icons.Filled.Settings, null)
                     }
                 })
+                
             bitmapImage?.let {
                 Image(
                     modifier = Modifier
