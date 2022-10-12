@@ -51,9 +51,11 @@ fun EventDetails(
         }
     }
 
-    Box {
+
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .height(710.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             TopAppBar(
                 elevation = 4.dp,
@@ -158,13 +160,5 @@ fun EventDetails(
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(12.dp)
             )
-            Text(
-                text = "testingdfwuehfwuiehfiuwhefiuweuihfwiuehfiuwehfiuwehfweufwieufhwiuefhwiuehfiuwhefiuwefiuhwieufhwiuehfiwuehfiuwhefiuwhefiuhweifuhwefwiuefhwiuefhwieufhwiuehfwieufh",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(12.dp)
-            )
         }
     }
-}

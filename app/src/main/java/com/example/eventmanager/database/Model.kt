@@ -37,6 +37,7 @@ data class Event(
     val category: String,
     val city: String,
     val street: String,
+    val description: String,
     val date: String,
     val time: String,
 )
