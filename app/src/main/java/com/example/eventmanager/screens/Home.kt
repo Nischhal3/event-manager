@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -30,12 +31,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.ui.theme.Gray
 import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.delete
+import com.example.eventmanager.viewmodel.DateAndTimeViewModel
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
 
@@ -333,10 +336,18 @@ fun EventCard(
     bitmapImage: Bitmap,
     imageId: Long?
 ) {
-
+    val context = LocalContext.current
     // Converting Long imageId to String to pass it's value through navigation
     val imageIdAsString = imageId.toString()
+    val dateAndTimeViewModel = DateAndTimeViewModel()
 
+    var alarmTime by remember {
+        mutableStateOf("")
+    }
+    var alarmDate by remember {
+        mutableStateOf("")
+    }
+    Log.d("user", "home $alarmDate $alarmTime")
 
     Card(
         modifier = Modifier
@@ -375,6 +386,18 @@ fun EventCard(
                     text = date,
                     style = MaterialTheme.typography.body2,
                 )
+                Button(onClick = {
+                    // View model method call in onClick event
+                    dateAndTimeViewModel.selectDateTime(context)
+                    dateAndTimeViewModel.time.observe(context as MainActivity) {
+                        alarmTime = it
+                    }
+                    dateAndTimeViewModel.date.observe(context) {
+                        alarmDate = it
+                    }
+                }) {
+                    Text("Alarm")
+                }
             }
 
             Spacer(modifier = Modifier.width(60.dp))
