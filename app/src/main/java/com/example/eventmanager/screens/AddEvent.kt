@@ -247,9 +247,10 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                                 category,
                                 city,
                                 street,
+                                description,
                                 date,
                                 time,
-                                )
+                            )
                         )
                         userViewModel.addImage(name)
                     }

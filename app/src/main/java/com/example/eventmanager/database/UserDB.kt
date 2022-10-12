@@ -7,7 +7,7 @@ import com.example.eventmanager.converter.Converter
 /**
  * Instance of the database
  */
-@Database(entities = [(User::class), (Event::class), (EventImage::class)], version = 7)
+@Database(entities = [(User::class), (Event::class), (EventImage::class)], version = 8)
 @TypeConverters(Converter::class)
 abstract class UserDB : RoomDatabase() {
     abstract fun userDao(): UserDao
