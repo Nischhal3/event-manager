@@ -34,7 +34,6 @@ import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.ui.theme.Gray
-import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.delete
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
@@ -274,10 +273,12 @@ fun ListOfEvents(
                                 name = item.event_name,
                                 country = item.city,
                                 date = item.date,
+                                description = item.description,
                                 navController = navController,
                                 userViewModel = userViewModel,
                                 bitmapImage = bitmap,
-                                imageId = imageId
+                                imageId = imageId,
+
                             )
                         }
                     }
@@ -308,6 +309,7 @@ fun ListOfEvents(
                                     name = it.event_name,
                                     country = it.city,
                                     date = it.date,
+                                    description = it.description,
                                     navController = navController,
                                     userViewModel = userViewModel,
                                     bitmapImage = bitmap,
@@ -328,16 +330,16 @@ fun EventCard(
     name: String,
     country: String,
     date: String,
+    description: String,
     navController: NavController,
     userViewModel: UserViewModel,
     bitmapImage: Bitmap,
-    imageId: Long?
+    imageId: Long?,
 ) {
 
     // Converting Long imageId to String to pass it's value through navigation
     val imageIdAsString = imageId.toString()
-
-
+    Log.d("home", description)
     Card(
         modifier = Modifier
             .padding(10.dp)
