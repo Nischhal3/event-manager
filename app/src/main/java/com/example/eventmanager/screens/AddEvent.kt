@@ -184,7 +184,7 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                 onValueChange = { description = it },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Streetview,
+                        imageVector = Icons.Default.Details,
                         contentDescription = ""
                     )
                 },

@@ -7,6 +7,8 @@ import android.util.Base64
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -31,6 +33,7 @@ fun EventDetails(
     navController: NavController,
     name: String?,
     date: String?,
+    description: String?,
     imageIdAsString: String?,
     userViewModel: UserViewModel,
 ) {
@@ -49,7 +52,9 @@ fun EventDetails(
     }
 
     Box {
-        Column {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             TopAppBar(
                 elevation = 4.dp,
                 title = {
@@ -60,19 +65,14 @@ fun EventDetails(
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(Icons.Filled.ArrowBack, null)
                     }
-                }, actions = {
-                    IconButton(onClick = {/* Do Something*/ }) {
-                        Icon(Icons.Filled.Share, null)
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Settings, null)
-                    }
+
                 })
-                
+
             bitmapImage?.let {
                 Image(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(250.dp),
                     bitmap = it.asImageBitmap(),
                     contentDescription = "Header Background",
                     contentScale = ContentScale.FillWidth
@@ -152,7 +152,14 @@ fun EventDetails(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "$name",
+                text = "$description",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onSurface,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(12.dp)
+            )
+            Text(
+                text = "testingdfwuehfwuiehfiuwhefiuweuihfwiuehfiuwehfiuwehfweufwieufhwiuefhwiuehfiuwhefiuwefiuhwieufhwiuehfiwuehfiuwhefiuwhefiuhweifuhwefwiuefhwiuefhwieufhwiuehfwieufh",
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Start,

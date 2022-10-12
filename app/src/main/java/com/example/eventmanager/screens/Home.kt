@@ -272,8 +272,9 @@ fun ListOfEvents(
                         bitmapImage?.let { bitmap ->
                             EventCard(
                                 name = item.event_name,
-                                country = item.city,
+                                location = item.street,
                                 date = item.date,
+                                description = item.time,
                                 navController = navController,
                                 userViewModel = userViewModel,
                                 bitmapImage = bitmap,
@@ -306,8 +307,9 @@ fun ListOfEvents(
                             bitmapImage?.let { bitmap ->
                                 EventCard(
                                     name = it.event_name,
-                                    country = it.city,
+                                    location = it.street,
                                     date = it.date,
+                                    description= it.time,
                                     navController = navController,
                                     userViewModel = userViewModel,
                                     bitmapImage = bitmap,
@@ -326,8 +328,9 @@ fun ListOfEvents(
 @Composable
 fun EventCard(
     name: String,
-    country: String,
+    location: String,
     date: String,
+    description: String,
     navController: NavController,
     userViewModel: UserViewModel,
     bitmapImage: Bitmap,
@@ -343,7 +346,7 @@ fun EventCard(
             .padding(10.dp)
             .width(340.dp)
             .wrapContentHeight()
-            .clickable { navController.navigate("details/$name/$date/$imageIdAsString") },
+            .clickable { navController.navigate("details/$name/$date/$description/$imageIdAsString") },
         shape = MaterialTheme.shapes.medium,
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
@@ -368,7 +371,7 @@ fun EventCard(
                     color = MaterialTheme.colors.onSurface,
                 )
                 Text(
-                    text = country,
+                    text = location,
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
