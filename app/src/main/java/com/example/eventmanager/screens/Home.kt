@@ -1,7 +1,13 @@
 package com.example.eventmanager.screens
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,14 +37,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
+import com.example.eventmanager.alarm.MyAlarm
 import com.example.eventmanager.database.Event
 import com.example.eventmanager.ui.theme.Background
 import com.example.eventmanager.ui.theme.Gray
-import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.delete
-import com.example.eventmanager.viewmodel.DateAndTimeViewModel
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
 
@@ -277,10 +281,11 @@ fun ListOfEvents(
                                 name = item.event_name,
                                 country = item.city,
                                 date = item.date,
+                                time = item.time,
                                 navController = navController,
                                 userViewModel = userViewModel,
                                 bitmapImage = bitmap,
-                                imageId = imageId
+                                imageId = imageId,
                             )
                         }
                     }
@@ -311,6 +316,7 @@ fun ListOfEvents(
                                     name = it.event_name,
                                     country = it.city,
                                     date = it.date,
+                                    time = it.time,
                                     navController = navController,
                                     userViewModel = userViewModel,
                                     bitmapImage = bitmap,
@@ -331,24 +337,16 @@ fun EventCard(
     name: String,
     country: String,
     date: String,
+    time: String,
     navController: NavController,
     userViewModel: UserViewModel,
     bitmapImage: Bitmap,
-    imageId: Long?
+    imageId: Long?,
 ) {
     val context = LocalContext.current
     // Converting Long imageId to String to pass it's value through navigation
     val imageIdAsString = imageId.toString()
-    val dateAndTimeViewModel = DateAndTimeViewModel()
-
-    var alarmTime by remember {
-        mutableStateOf("")
-    }
-    var alarmDate by remember {
-        mutableStateOf("")
-    }
-    Log.d("user", "home $alarmDate $alarmTime")
-
+    val splitTime = time.split(":").toMutableList()
     Card(
         modifier = Modifier
             .padding(10.dp)
@@ -387,13 +385,19 @@ fun EventCard(
                     style = MaterialTheme.typography.body2,
                 )
                 Button(onClick = {
-                    // View model method call in onClick event
-                    dateAndTimeViewModel.selectDateTime(context)
-                    dateAndTimeViewModel.time.observe(context as MainActivity) {
-                        alarmTime = it
-                    }
-                    dateAndTimeViewModel.date.observe(context) {
-                        alarmDate = it
+                    setAlarm(context, date, time)
+                    if(splitTime[1].toInt() == 0){
+                        Toast.makeText(
+                            context,
+                            "Alarm is set for $date,${splitTime[0].toInt() - 1}:${60-1}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }else{
+                        Toast.makeText(
+                            context,
+                            "Alarm is set for $date,${splitTime[0].toInt()}:${splitTime[1].toInt() - 1}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }) {
                     Text("Alarm")
@@ -424,4 +428,39 @@ fun EventCard(
 
         }
     }
+}
+
+/**
+ * Alarm service
+ */
+@SuppressLint("UnspecifiedImmutableFlag")
+private fun setAlarm(context: Context, date: String, time: String) {
+    val splitDate = date.split("-").toMutableList()
+    val splitTime = time.split(":").toMutableList()
+    val year = splitDate[2].toInt()
+    val month = splitDate[1].toInt()
+    val day = splitDate[0].toInt()
+    val hour: Int
+    val minute: Int
+    if (splitTime[1].toInt() == 0) {
+        minute = 60 - 1
+        hour = splitTime[0].toInt() - 1
+    } else {
+        minute = splitTime[1].toInt() - 1
+        hour = splitTime[0].toInt()
+    }
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    // Setting time for alarm input
+    val calendar: Calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, year)
+        set(Calendar.MONTH, month)
+        set(Calendar.DAY_OF_MONTH, day)
+        set(Calendar.HOUR_OF_DAY, hour)
+        set(Calendar.MINUTE, minute)
+    }
+
+    val intent = Intent(context, MyAlarm::class.java)
+    val pendingIntent =
+        PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 }

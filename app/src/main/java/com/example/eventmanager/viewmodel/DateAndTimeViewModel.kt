@@ -39,7 +39,7 @@ class DateAndTimeViewModel : ViewModel() {
                     month.toString()
                 }
                 // Setting date and time values
-                _date.value = "$day - $monthAsString - $year"
+                _date.value = "$day-$monthAsString-$year"
                 if (minute <= 9) {
                     _time.value = "$hour:0$minute"
                 } else {
