@@ -30,8 +30,6 @@ class DateAndTimeViewModel : ViewModel() {
         val startMinute = currentDateTime.get(Calendar.MINUTE)
 
         DatePickerDialog(context, { _, year, month, day ->
-            //val datePickerDialog = DatePickerDialog(context)
-            //datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
             TimePickerDialog(context, { _, hour, minute ->
                 val pickedDateTime = Calendar.getInstance()
                 pickedDateTime.set(year, month, day, hour, minute)
@@ -40,9 +38,8 @@ class DateAndTimeViewModel : ViewModel() {
                 } else {
                     month.toString()
                 }
-                //Log.d("user", "from date $day - $monthAsString - $year $hour:$minute\"")
                 // Setting date and time values
-                _date.value = "$day - $monthAsString - $year"
+                _date.value = "$day-$monthAsString-$year"
                 if (minute <= 9) {
                     _time.value = "$hour:0$minute"
                 } else {

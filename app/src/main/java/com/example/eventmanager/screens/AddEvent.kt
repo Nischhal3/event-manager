@@ -34,11 +34,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
-    // val eventList = userViewModel.getAllEvent().observeAsState(listOf())
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val dateAndTimeViewModel = DateAndTimeViewModel()
     val keyboardController = LocalSoftwareKeyboardController.current
+
     var name by remember {
         mutableStateOf("")
     }

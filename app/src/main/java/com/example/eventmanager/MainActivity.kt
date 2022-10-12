@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         private val mTemperatureViewModel = LightSensorViewModel()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = UserViewModel(application)
