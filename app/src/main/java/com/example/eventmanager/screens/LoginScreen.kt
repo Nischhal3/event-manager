@@ -1,6 +1,5 @@
 package com.example.eventmanager.screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -37,15 +36,11 @@ fun loginScreen(
     userViewModel: UserViewModel,
 ): MutableState<String> {
     val userList = userViewModel.getAllUser().observeAsState(listOf())
-    userList.value.forEach {
-        Log.d("user", "${it.password}: ${it.user_name}")
-    }
-    Log.d("user", userList.value.size.toString())
-
     val userName = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
     var isEnabled = true
+
     if (userName.value.isEmpty() || password.value.isEmpty()) {
         isEnabled = false
     }
@@ -87,7 +82,6 @@ fun loginScreen(
                         fontSize = 14.sp,
                         color = Main
                     )
-
                 }
             }
 
@@ -126,7 +120,6 @@ fun loginScreen(
                         label = { Text(text = "Email Address", color = MainText) },
                         placeholder = { Text(text = "Enter email") },
                         modifier = Modifier.padding(vertical = 3.dp)
-
                     )
                     Spacer(modifier = Modifier.padding(6.dp))
                     TextField(
@@ -170,7 +163,6 @@ fun loginScreen(
                         ),
                         shape = MaterialTheme.shapes.medium,
                         enabled = isEnabled
-
                     ) {
                         Text(text = "Log In")
                     }

@@ -42,7 +42,6 @@ import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
 
 @Composable
-
 fun HomeScreen(
     userId: Long?,
     userViewModel: UserViewModel,
@@ -53,7 +52,6 @@ fun HomeScreen(
         userId?.let { userViewModel.getAllEventByUserId(it).observeAsState(listOf()) }
 
     Box {
-
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,13 +109,11 @@ fun AppBar(state: MutableState<TextFieldValue>) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-
 fun Content(
     eventListByUser: State<List<Event>>?,
     navController: NavController,
     userViewModel: UserViewModel,
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val textState = remember { mutableStateOf(TextFieldValue("")) }
 
@@ -132,7 +128,6 @@ fun Content(
         )
     }
 }
-
 
 @Composable
 fun ListOfEvents(
@@ -157,9 +152,7 @@ fun ListOfEvents(
         ) {
             Text(text = "Upcoming Events", style = MaterialTheme.typography.h6)
         }
-
         eventListByUser?.value?.let { it ->
-
             val searchedText = state.value.text
             if (searchedText.isEmpty()) {
                 LazyColumn(
@@ -232,7 +225,6 @@ fun ListOfEvents(
     }
 }
 
-
 @Composable
 fun EventCard(
     name: String,
@@ -271,7 +263,7 @@ fun EventCard(
                     .clip(RoundedCornerShape(10.dp)),
                 contentScale = ContentScale.Fit,
             )
-            Column (Modifier.width(120.dp)) {
+            Column(Modifier.width(120.dp)) {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.h6,
@@ -285,12 +277,10 @@ fun EventCard(
                     text = date,
                     style = MaterialTheme.typography.body2,
                 )
-
             }
 
             Spacer(modifier = Modifier.width(20.dp))
-            Column( horizontalAlignment = Alignment.End) {
-
+            Column(horizontalAlignment = Alignment.End) {
                 IconButton(
                     onClick = {
                         userViewModel.deleteEvent(name)
@@ -310,7 +300,7 @@ fun EventCard(
                     contentPadding = PaddingValues(4.dp),
                     modifier = Modifier
                         .wrapContentWidth()
-                        .defaultMinSize( minHeight = 30.dp)
+                        .defaultMinSize(minHeight = 30.dp)
                         .padding(5.dp)
                         .offset(x = 10.dp, y = 5.dp),
                     onClick = {
@@ -329,11 +319,9 @@ fun EventCard(
                             ).show()
                         }
                     }) {
-
                     Text("Remind me", fontSize = 12.sp, color = MainText)
                 }
             }
-
         }
     }
 }

@@ -207,7 +207,7 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                         .weight(1f)
                 ) {
                     Text(
-                        text = "When:$date $time", textAlign = TextAlign.Start
+                        text = "$date $time", textAlign = TextAlign.Start
                     )
                 }
 

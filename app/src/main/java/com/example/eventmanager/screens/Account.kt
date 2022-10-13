@@ -3,11 +3,8 @@
 package com.example.eventmanager.screens
 
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,14 +14,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.ui.theme.*
@@ -33,8 +26,7 @@ import com.example.eventmanager.viewmodel.UserViewModel
 @Composable
 fun Account(
     userName: MutableState<String>,
-    userViewModel: UserViewModel,
-    navController: NavHostController
+    userViewModel: UserViewModel
 ) {
     val context = LocalContext.current
     // Converting mutable string to normal string
@@ -85,7 +77,6 @@ fun Account(
 
             Text(text = "First Name:", modifier = Modifier.width(100.dp))
             Text(text = "${user.value?.first_name}", modifier = Modifier.padding(start = 15.dp))
-
         }
         Spacer(modifier = Modifier.height(20.dp))
         Row(
@@ -96,7 +87,6 @@ fun Account(
         ) {
             Text(text = "Last Name:", modifier = Modifier.width(100.dp))
             Text(text = "${user.value?.last_name}", modifier = Modifier.padding(start = 15.dp))
-
         }
         Spacer(modifier = Modifier.height(20.dp))
         Row(
@@ -107,9 +97,7 @@ fun Account(
         ) {
             Text(text = "Username:", modifier = Modifier.width(100.dp))
             Text(text = userNameAsString, modifier = Modifier.padding(start = 15.dp))
-
         }
-
     }
     Column(
         modifier = Modifier
@@ -141,10 +129,8 @@ fun Account(
 
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProfileImage() {
-
     Column(
         modifier = Modifier
             .padding(8.dp)

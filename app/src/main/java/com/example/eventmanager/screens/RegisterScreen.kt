@@ -36,7 +36,6 @@ import com.example.eventmanager.viewmodel.UserViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Register(navController: NavController, userViewModel: UserViewModel) {
-    //userViewModel.deleteUsers()
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val userName = remember { mutableStateOf("") }
@@ -89,7 +88,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             Text(
                 text = "Sign Up", fontWeight = FontWeight.Bold
             )
@@ -138,7 +136,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                                 tint = if (passwordVisibility.value) MainText else Color.Gray
                             )
                         }
-
                     },
                     label = { Text(text = "Password", color = MainText) },
                     placeholder = { Text(text = "Enter password") },
@@ -147,7 +144,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                     modifier = Modifier
                         .padding(vertical = 3.dp)
                         .fillMaxWidth(0.8f)
-
                 )
                 TextField(
                     value = confirmPassword.value,
@@ -162,7 +158,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                                 tint = if (confirmPasswordVisibility.value) MainText else Color.Gray
                             )
                         }
-
                     },
                     label = { Text(text = "Confirm password", color = MainText) },
                     placeholder = { Text(text = "Confirm password") },
@@ -180,9 +175,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
                     onClick = {
-//                        navController.navigate("main") {
-//                            popUpTo("login") { inclusive = true }
-//                        }
                         navController.navigate("login") {
                             launchSingleTop = true
                         }
@@ -205,7 +197,6 @@ fun Register(navController: NavController, userViewModel: UserViewModel) {
                     shape = MaterialTheme.shapes.medium,
                     enabled = isEnabled
                 ) {
-
                     Text(text = "Sign Up", color = Background)
                 }
                 Spacer(modifier = Modifier.padding(20.dp))

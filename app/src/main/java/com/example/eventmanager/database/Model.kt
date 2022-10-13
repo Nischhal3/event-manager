@@ -11,7 +11,6 @@ import androidx.room.ForeignKey.CASCADE
 data class User(
     @PrimaryKey(autoGenerate = true)
     val user_id: Long,
-    // @PrimaryKey
     val first_name: String,
     val last_name: String,
     val user_name: String,

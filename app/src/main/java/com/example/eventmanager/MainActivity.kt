@@ -27,12 +27,10 @@ import com.example.eventmanager.viewmodel.LightSensorViewModel
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.lang.reflect.Field
 
-
 class MainActivity : ComponentActivity(), SensorEventListener {
     companion object {
         private lateinit var userViewModel: UserViewModel
         private lateinit var userName: MutableState<String>
-
         private lateinit var sm: SensorManager
         private var slight: Sensor? = null
         private val mTemperatureViewModel = LightSensorViewModel()
@@ -66,7 +64,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                         }
                         composable(AuthNavigationScreens.Main.route) {
                             MainFragment(
-                                navController,
                                 userName,
                                 userViewModel
                             )

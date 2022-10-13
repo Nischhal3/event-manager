@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.eventmanager.viewmodel.UserViewModel
 
-
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun EventDetails(
@@ -46,114 +45,110 @@ fun EventDetails(
         }
     }
 
-
-        Column(
-            modifier = Modifier
-                .height(710.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            TopAppBar(
-                elevation = 4.dp,
-                title = {
-                    Text("Event Details")
-                },
-                backgroundColor = MaterialTheme.colors.primarySurface,
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("home") }) {
-                        Icon(Icons.Filled.ArrowBack, null)
-                    }
-
-                })
-
-            bitmapImage?.let {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = "Header Background",
-                    contentScale = ContentScale.FillWidth
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "$name",
-                    style = MaterialTheme.typography.h5,
-                    color = MaterialTheme.colors.onSurface,
-                    textAlign = TextAlign.Center
-                )
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .width(340.dp)
-                        .wrapContentHeight(),
-                    shape = MaterialTheme.shapes.medium,
-                    elevation = 5.dp,
-                    backgroundColor = MaterialTheme.colors.surface,
-
-                    ) {
-
-                    Box(
-                        Modifier.padding(12.dp),
-                    ) {
-                        Column() {
-                            Row() {
-                                Image(
-                                    modifier = Modifier
-                                        .width(50.dp)
-                                        .height(50.dp),
-                                    painter = painterResource(id = com.example.eventmanager.R.drawable.date),
-                                    contentDescription = "Date"
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 20.dp, top = 10.dp),
-                                    text = "$name",
-                                    style = MaterialTheme.typography.h6,
-                                    color = MaterialTheme.colors.onSurface,
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Row() {
-                                Image(
-                                    modifier = Modifier
-                                        .width(50.dp)
-                                        .height(50.dp),
-                                    painter = painterResource(id = com.example.eventmanager.R.drawable.location),
-                                    contentDescription = "Location"
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 20.dp, top = 10.dp),
-                                    text = "$date",
-                                    style = MaterialTheme.typography.h6,
-                                    color = MaterialTheme.colors.onSurface,
-                                )
-                            }
-                        }
-
-
-                    }
-
+    Column(
+        modifier = Modifier
+            .height(710.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        TopAppBar(
+            elevation = 4.dp,
+            title = {
+                Text("Event Details")
+            },
+            backgroundColor = MaterialTheme.colors.primarySurface,
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(Icons.Filled.ArrowBack, null)
                 }
-            }
-            Text(
-                text = "About Event",
-                style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(12.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = "$description",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(12.dp)
+            })
+
+        bitmapImage?.let {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
+                bitmap = it.asImageBitmap(),
+                contentDescription = "Header Background",
+                contentScale = ContentScale.FillWidth
             )
         }
+        Column(
+            modifier = Modifier
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "$name",
+                style = MaterialTheme.typography.h5,
+                color = MaterialTheme.colors.onSurface,
+                textAlign = TextAlign.Center
+            )
+            Card(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .width(340.dp)
+                    .wrapContentHeight(),
+                shape = MaterialTheme.shapes.medium,
+                elevation = 5.dp,
+                backgroundColor = MaterialTheme.colors.surface,
+
+                ) {
+
+                Box(
+                    Modifier.padding(12.dp),
+                ) {
+                    Column {
+                        Row {
+                            Image(
+                                modifier = Modifier
+                                    .width(50.dp)
+                                    .height(50.dp),
+                                painter = painterResource(id = com.example.eventmanager.R.drawable.date),
+                                contentDescription = "Date"
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                                text = "$name",
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.colors.onSurface,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row {
+                            Image(
+                                modifier = Modifier
+                                    .width(50.dp)
+                                    .height(50.dp),
+                                painter = painterResource(id = com.example.eventmanager.R.drawable.location),
+                                contentDescription = "Location"
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                                text = "$date",
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.colors.onSurface,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        Text(
+            text = "About Event",
+            style = MaterialTheme.typography.h5,
+            color = MaterialTheme.colors.onSurface,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.padding(12.dp)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+            text = "$description",
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.onSurface,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.padding(12.dp)
+        )
     }
+}
