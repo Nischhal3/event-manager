@@ -274,7 +274,7 @@ fun EventCard(
             Column (Modifier.width(120.dp)) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.h6,
                     color = MaterialTheme.colors.onSurface,
                 )
                 Text(
