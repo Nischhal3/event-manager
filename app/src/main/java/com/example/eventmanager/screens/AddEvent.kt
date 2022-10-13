@@ -1,7 +1,8 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.eventmanager.screens
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
-import com.example.eventmanager.ui.theme.Gray
 import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.viewmodel.DateAndTimeViewModel
