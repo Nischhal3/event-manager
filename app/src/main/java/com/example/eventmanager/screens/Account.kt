@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -104,7 +105,7 @@ fun Account(
                 .padding(start = 20.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
+            Text(text = "Username:", modifier = Modifier.width(100.dp))
             Text(text = userNameAsString, modifier = Modifier.padding(start = 15.dp))
 
         }
@@ -143,18 +144,6 @@ fun Account(
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProfileImage() {
-    val imageUri = rememberSaveable { mutableStateOf("") }
-    val painter = rememberImagePainter(
-        if (imageUri.value.isEmpty())
-            R.drawable.ic_user
-        else
-            imageUri.value
-    )
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { imageUri.value = it.toString() }
-    }
 
     Column(
         modifier = Modifier
@@ -169,12 +158,10 @@ fun ProfileImage() {
                 .size(100.dp)
         ) {
             Image(
-                painter = painter,
+                painter = painterResource(id = R.drawable.ic_user),
                 contentDescription = null,
                 modifier = Modifier
                     .wrapContentSize()
-                    .clickable { launcher.launch("image/*") },
-                contentScale = ContentScale.Crop
             )
         }
     }
