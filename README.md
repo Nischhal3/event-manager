@@ -11,7 +11,7 @@ Android Jetpack Compose application development course - Autumn 2022 - Metropoli
 - Contributors
 
 ## Overview
-CalEvent is a event manage application where the user can create and manage all upcoming events.
+CalEvent is a event manage application where the user can create and manage all upcoming events. [Watch video](https://youtu.be/TUALvP9fnSs)
 
 ## Project requirements
 - Phone internal sensor
