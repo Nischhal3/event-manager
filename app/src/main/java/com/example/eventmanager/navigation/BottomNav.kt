@@ -1,7 +1,6 @@
 package com.example.eventmanager.navigation
 
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
