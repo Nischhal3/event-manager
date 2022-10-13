@@ -21,10 +21,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
 import com.example.eventmanager.database.Event
+import com.example.eventmanager.ui.theme.Gray
 import com.example.eventmanager.ui.theme.Main
 import com.example.eventmanager.ui.theme.MainText
 import com.example.eventmanager.viewmodel.DateAndTimeViewModel
@@ -179,64 +181,85 @@ fun AddEvent(userId: Long?, userViewModel: UserViewModel) {
                 )
             )
             Spacer(modifier = Modifier.padding(5.dp))
+
+            OutlinedButton(
+                onClick = {
+                    // View model method call in onClick event
+                    dateAndTimeViewModel.selectDateTime(context)
+                    dateAndTimeViewModel.time.observe(context as MainActivity) {
+                        time = it
+                    }
+                    dateAndTimeViewModel.date.observe(context) {
+                        date = it
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White,
+                    contentColor = MainText
+                ),
+                modifier = Modifier
+                    .width(340.dp)
+                    .height(55.dp)
+
+            ) {
+                Box(
+                    Modifier
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = "When:$date $time", textAlign = TextAlign.Start
+                    )
+                }
+
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    contentAlignment = Alignment.CenterEnd
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(45.dp)
+                            .padding(start = 20.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.padding(5.dp))
             TextField(
                 value = description,
                 onValueChange = { description = it },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Details,
+                        imageVector = Icons.Default.Description,
                         contentDescription = ""
                     )
                 },
-                label = { Text(text = "Description", color = MainText) },
+                label = {
+                    Text(
+                        text = "Description",
+                        color = MainText,
+                        textAlign = TextAlign.Center
+                    )
+                },
                 modifier = Modifier
                     .padding(vertical = 3.dp)
-                    .width(340.dp),
+                    .width(340.dp)
+                    .height(70.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.White
                 )
             )
             Spacer(modifier = Modifier.padding(5.dp))
+            Button(onClick = {
+                launcher.launch("image/*")
 
-            Row {
-                Button(onClick = {
-                    launcher.launch("image/*")
-
-                }) {
-                    Text("Pick Image")
-                }
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                OutlinedButton(
-                    onClick = {
-                        // View model method call in onClick event
-                        dateAndTimeViewModel.selectDateTime(context)
-                        dateAndTimeViewModel.time.observe(context as MainActivity) {
-                            time = it
-                        }
-                        dateAndTimeViewModel.date.observe(context) {
-                            date = it
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MainText,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .width(55.dp)
-                        .height(55.dp)
-
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarToday,
-                        contentDescription = "passwordIcon",
-                        modifier = Modifier.fillMaxSize(1.0f)
-                    )
-
-                }
+            }) {
+                Text("Pick Image")
             }
             Spacer(modifier = Modifier.padding(5.dp))
-
             Button(
                 onClick = {
                     if (userId != null) {
