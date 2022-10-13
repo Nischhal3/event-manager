@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.eventmanager.screens
 
 import android.annotation.SuppressLint
@@ -6,7 +8,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -16,8 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -27,22 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.eventmanager.R
 import com.example.eventmanager.alarm.MyAlarm
 import com.example.eventmanager.database.Event
-import com.example.eventmanager.ui.theme.Background
-import com.example.eventmanager.ui.theme.Gray
-import com.example.eventmanager.ui.theme.delete
+import com.example.eventmanager.ui.theme.*
 import com.example.eventmanager.viewmodel.UserViewModel
 import java.util.*
 
@@ -111,23 +106,6 @@ fun AppBar(state: MutableState<TextFieldValue>) {
                 .weight(1f)
                 .fillMaxHeight()
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        IconButton(onClick = { }) {
-            Icon(
-                imageVector = Icons.Outlined.FavoriteBorder,
-                contentDescription = "",
-                tint = Color.White
-            )
-        }
-        IconButton(onClick = {
-
-        }) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "",
-                tint = Color.White
-            )
-        }
     }
 }
 
@@ -144,12 +122,8 @@ fun Content(
     val textState = remember { mutableStateOf(TextFieldValue("")) }
 
     Column(modifier = Modifier.clickable { keyboardController?.hide() }) {
-
         AppBar(textState)
-        Spacer(modifier = Modifier.height(16.dp))
-        // CategorySection()
-        Spacer(modifier = Modifier.height(16.dp))
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         ListOfEvents(
             eventListByUser = eventListByUser,
             userViewModel = userViewModel,
@@ -159,80 +133,6 @@ fun Content(
     }
 }
 
-
-@Composable
-fun CategorySection() {
-    Column(
-        Modifier
-            .padding(horizontal = 16.dp)
-            .background((Background))
-    ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "Category", style = MaterialTheme.typography.h6)
-        }
-
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            CategoryButton(
-                text = "Sport",
-                icon = painterResource(id = R.drawable.ic_sports),
-                backgroundColor = Color(0xFFF0635A)
-            )
-            CategoryButton(
-                text = "Music",
-                icon = painterResource(id = R.drawable.ic_music),
-                backgroundColor = Color(0xFFF59762)
-            )
-            CategoryButton(
-                text = "Food",
-                icon = painterResource(id = R.drawable.ic_food),
-                backgroundColor = Color(0xFF29D697)
-            )
-            CategoryButton(
-                text = "Arts",
-                icon = painterResource(id = R.drawable.ic_brush),
-                backgroundColor = Color(0xFF46CDFB)
-            )
-        }
-    }
-}
-
-@Composable
-fun CategoryButton(
-    text: String = "",
-    icon: Painter,
-    backgroundColor: Color
-) {
-    Column(
-        Modifier
-            .width(60.dp)
-            .clickable { }
-    ) {
-        Box(
-            Modifier
-                .size(60.dp)
-                .background(
-                    color = backgroundColor,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .padding(15.dp)
-        ) {
-            Image(painter = icon, contentDescription = "", modifier = Modifier.fillMaxSize())
-        }
-        Text(
-            text = text,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontSize = 12.sp
-        )
-    }
-}
 
 @Composable
 fun ListOfEvents(
@@ -279,7 +179,7 @@ fun ListOfEvents(
                         bitmapImage?.let { bitmap ->
                             EventCard(
                                 name = item.event_name,
-                                country = item.city,
+                                location = item.street,
                                 date = item.date,
                                 time = item.time,
                                 description = item.description,
@@ -291,7 +191,6 @@ fun ListOfEvents(
                         }
                     }
                 }
-
             } else {
                 val resultList = ArrayList<Event>()
 
@@ -315,7 +214,7 @@ fun ListOfEvents(
                             bitmapImage?.let { bitmap ->
                                 EventCard(
                                     name = it.event_name,
-                                    country = it.city,
+                                    location = it.street,
                                     date = it.date,
                                     time = it.time,
                                     description = it.description,
@@ -337,7 +236,7 @@ fun ListOfEvents(
 @Composable
 fun EventCard(
     name: String,
-    country: String,
+    location: String,
     date: String,
     time: String,
     description: String,
@@ -355,7 +254,7 @@ fun EventCard(
             .padding(10.dp)
             .width(340.dp)
             .wrapContentHeight()
-            .clickable { navController.navigate("details/$name/$date/$imageIdAsString") },
+            .clickable { navController.navigate("details/$name/$date/$description/$imageIdAsString") },
         shape = MaterialTheme.shapes.medium,
         elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
@@ -365,51 +264,32 @@ fun EventCard(
         ) {
             Image(
                 bitmap = bitmapImage.asImageBitmap(),
-                //painter = painterResource(id = R.drawable.event1),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(100.dp)
                     .padding(8.dp)
                     .clip(RoundedCornerShape(10.dp)),
                 contentScale = ContentScale.Fit,
             )
-            Column(Modifier.padding(8.dp)) {
+            Column (Modifier.width(120.dp)) {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.colors.onSurface,
                 )
                 Text(
-                    text = country,
+                    text = location,
                     style = MaterialTheme.typography.body2,
                 )
                 Text(
                     text = date,
                     style = MaterialTheme.typography.body2,
                 )
-                Button(onClick = {
-                    setAlarm(context, date, time)
-                    if(splitTime[1].toInt() == 0){
-                        Toast.makeText(
-                            context,
-                            "Alarm is set for $date,${splitTime[0].toInt() - 1}:${60-1}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }else{
-                        Toast.makeText(
-                            context,
-                            "Alarm is set for $date,${splitTime[0].toInt()}:${splitTime[1].toInt() - 1}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }) {
-                    Text("Alarm")
-                }
+
             }
 
-            Spacer(modifier = Modifier.width(60.dp))
-            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.width(60.dp)) {
-                Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.width(20.dp))
+            Column( horizontalAlignment = Alignment.End) {
 
                 IconButton(
                     onClick = {
@@ -417,7 +297,7 @@ fun EventCard(
                     },
                     modifier = Modifier
                         .defaultMinSize(minWidth = 40.dp, minHeight = 30.dp)
-                        .padding(start = 10.dp)
+                        .padding(start = 30.dp, top = 35.dp)
                 ) {
                     Icon(
                         Icons.Outlined.Delete,
@@ -426,7 +306,32 @@ fun EventCard(
                     )
                 }
 
-                Text(text = "See more", color = Gray, fontSize = 14.sp)
+                OutlinedButton(
+                    contentPadding = PaddingValues(4.dp),
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .defaultMinSize( minHeight = 30.dp)
+                        .padding(5.dp)
+                        .offset(x = 10.dp, y = 5.dp),
+                    onClick = {
+                        setAlarm(context, date, time)
+                        if (splitTime[1].toInt() == 0) {
+                            Toast.makeText(
+                                context,
+                                "Alarm is set for $date,${splitTime[0].toInt() - 1}:${60 - 1}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Alarm is set for $date,${splitTime[0].toInt()}:${splitTime[1].toInt() - 1}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }) {
+
+                    Text("Remind me", fontSize = 12.sp, color = MainText)
+                }
             }
 
         }

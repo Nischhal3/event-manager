@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.eventmanager.screens
 
 import android.content.Intent
@@ -10,32 +12,22 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.eventmanager.MainActivity
 import com.example.eventmanager.R
-import com.example.eventmanager.navigation.AuthNavigationScreens
-import com.example.eventmanager.navigation.BottomNavigationScreens
 import com.example.eventmanager.ui.theme.*
 import com.example.eventmanager.viewmodel.UserViewModel
-import java.time.format.TextStyle
 
 @Composable
 fun Account(
@@ -65,35 +57,32 @@ fun Account(
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-            .padding(8.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Cancel",
-                modifier = Modifier.clickable { notification.value = "Cancelled" }, color = MainText
-            )
-            Text(
-                text = "Save",
-                modifier = Modifier.clickable { notification.value = "Profile updated" },
-                color = MainText
-            )
-        }
-
+        TopAppBar(
+            elevation = 4.dp,
+            title = {
+                Text("Profile")
+            },
+            backgroundColor = MaterialTheme.colors.primarySurface,
+        )
         ProfileImage()
         Spacer(modifier = Modifier.height(50.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
+                .offset(x = (-10).dp), horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Your details", color = Gray, textAlign = TextAlign.Center)
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Name", modifier = Modifier.width(100.dp))
+
+            Text(text = "First Name:", modifier = Modifier.width(100.dp))
             Text(text = "${user.value?.first_name}", modifier = Modifier.padding(start = 15.dp))
 
         }
@@ -101,7 +90,18 @@ fun Account(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
+                .padding(start = 20.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Last Name:", modifier = Modifier.width(100.dp))
+            Text(text = "${user.value?.last_name}", modifier = Modifier.padding(start = 15.dp))
+
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Username", modifier = Modifier.width(100.dp))
@@ -140,6 +140,7 @@ fun Account(
 
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProfileImage() {
     val imageUri = rememberSaveable { mutableStateOf("") }
@@ -176,6 +177,5 @@ fun ProfileImage() {
                 contentScale = ContentScale.Crop
             )
         }
-        Text(text = "Change profile picture", color = Gray)
     }
 }
