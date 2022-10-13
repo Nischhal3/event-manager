@@ -31,9 +31,9 @@ CalEvent is a event manage application where the user can create and manage all 
 
 ## App Screenshots
 <p float="left">
-  <img src="https://github.com/Nischhal3/event-manager/blob/main/app/src/main/res/drawable-nodpi/Screenshot_1665657302.png" width="200" height="400"/>
-  <img src="https://github.com/Nischhal3/event-manager/blob/main/app/src/main/res/drawable-nodpi/Screenshot_1665657610.png" width="200" height="400"/> 
-  <img  src="https://github.com/Nischhal3/event-manager/blob/main/app/src/main/res/drawable-nodpi/Screenshot_1665657616.png" width="200" height="400" />
+  <img src="https://github.com/Nischhal3/event-manager/blob/main/app/src/main/res/drawable-nodpi/img1.png" width="200" height="400"/>
+  <img src="https://github.com/Nischhal3/event-manager/blob/main/app/src/main/res/drawable-nodpi/img2.png" width="200" height="400"/> 
+  <img  src="https://github.com/Nischhal3/event-manager/blob/main/app/src/main/res/drawable-nodpi/img3.png" width="200" height="400" />
 </p>
 
 
