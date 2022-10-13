@@ -57,7 +57,7 @@ fun EventDetails(
                 title = {
                     Text("Event Details")
                 },
-                backgroundColor = MaterialTheme.colors.background,
+                backgroundColor = MaterialTheme.colors.primarySurface,
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(Icons.Filled.ArrowBack, null)
